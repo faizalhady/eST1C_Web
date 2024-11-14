@@ -1,0 +1,64 @@
+﻿@page "/"
+@using _1.Components.Layout
+@using _1.Components.Pages
+@inherits LayoutComponentBase
+@rendermode InteractiveServer
+
+<div class = "container-fluid atas">
+<NavBar />
+</div>
+<div class="container-fluid test" >
+    <div class="row g-2 mb-2">
+        <div class="col-6">
+            <div class="card ">
+                <div class="card-body p-0">
+                    <h3 class="card-title p-0">Overall Smart Torque By Plant</h3>
+                    <BarPlant />
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card ">
+                <div class="card-body p-0">
+                    <h3 class="card-title p-0">Overall Smart Torque By Workcell</h3>
+                    <BarWorkcell />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-2">
+        <div class="col-6">
+            <div class="card ">
+                <div class="card-body p-0">
+                    <h3 class="card-title p-0">Overall Smart Torque By Brand</h3>
+                    <Pie />
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+        <div class=" card bg-white ps-1">
+            <h5 class="card-title p-0">Overall Smart Torque By Model</h5>
+            <Table />
+        </div>
+    </div>
+    </div>
+</div>
+
+
+
+    <style>
+    .bg-white {
+        background-color: white !important;
+        border-radius: 10px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .bg-white:hover {
+    transform: translateY(-8px); /* Slight lift effect */
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .atas{
+        padding-bottom: 40px;
+    }
+</style>
+
+

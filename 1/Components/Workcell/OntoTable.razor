@@ -1,0 +1,92 @@
+@page "/table"
+@using System.Collections.Generic
+@using BlazorBootstrap
+
+<div class="container-fluid">
+    <Grid TItem="Customer2" Class="table table-hover table-bordered text-wrap table-sm"
+        DataProvider="CustomersDataProvider" AllowPaging="true" AllowSorting="true" FixedHeader="true" Responsive="true"
+        PageSize="8" Height="158">
+        <GridColumns>
+            <GridColumn TItem="Customer2" FreezeLeftPosition="0" HeaderText="No" PropertyName="No" SortString="No"
+                SortKeySelector="item => item.No" FilterTextboxWidth="50" HeaderTextAlignment="Alignment.Center"
+                TextAlignment="Alignment.Center">
+                @context.No
+            </GridColumn>
+            <GridColumn TItem="Customer2" FreezeLeftPosition="54.98" HeaderText="Brand" PropertyName="Brand"
+                SortString="Brand" SortKeySelector="item => item.Brand" FilterTextboxWidth="80">
+                @context.Brand
+            </GridColumn>
+            <GridColumn TItem="Customer2" HeaderText="Model" PropertyName="Model" SortString="Model"
+                SortKeySelector="item => item.Model" FilterTextboxWidth="100">
+                @context.Model
+            </GridColumn>
+            <GridColumn TItem="Customer2" HeaderText="Torque Range (lbf-in)" PropertyName="TorqueRangeLbfIn"
+                SortString="TorqueRangeLbfIn" SortKeySelector="item => item.TorqueRangeLbfIn" FilterTextboxWidth="120">
+                @context.TorqueRangeLbfIn
+            </GridColumn>
+            <GridColumn TItem="Customer2" FreezeDirection="FreezeDirection.Right" FreezeRightPosition="0"
+                HeaderText="Quantity" PropertyName="Quantity" SortString="Quantity"
+                SortKeySelector="item => item.Quantity" FilterTextboxWidth="80">
+                @context.Quantity
+            </GridColumn>
+        </GridColumns>
+
+    </Grid>
+</div>
+
+<style>
+    .table-sm .table td,
+    .table-sm .table th {
+        padding: 0.1rem;
+        /* Smaller padding for compact look */
+    }
+</style>
+
+
+
+@code {
+    // Define the Customer2 model here for simplicity
+    public class Customer2
+    {
+        public int? No { get; set; } // Corresponds to "No"
+        public string? Brand { get; set; } // Corresponds to "Brand"
+        public string? Model { get; set; } // Corresponds to "Model"
+        public string? TorqueRangeLbfIn { get; set; } // Corresponds to "Torque Range lbf-in"
+        public string? Quantity { get; set; } // Corresponds to "Quantity"
+    }
+
+
+    // Provide static data for the table
+    private async Task<GridDataProviderResult<Customer2>> CustomersDataProvider(GridDataProviderRequest<Customer2> request)
+    {
+        var customers = new List<Customer2>
+            {
+            
+            new Customer2 { No = 1, Brand = "Desoutter", Model = "EABC60-370", TorqueRangeLbfIn = "88.51 ~ 531.04", Quantity = "3" },
+            new Customer2 { No = 2, Brand = "Desoutter", Model = "EPBC8-1800-4Q", TorqueRangeLbfIn = "13.28 ~ 70.81", Quantity = "3" },
+            new Customer2 { No = 3, Brand = "Hantas", Model = "MD3210", TorqueRangeLbfIn = "7.0 ~ 75.5", Quantity = "3" },
+
+
+            };
+        // Simulate sorting if requested
+        // Existing sorting and paging logic remains unchanged
+        var sortedCustomers = customers;
+        if (request.Sorting is not null && request.Sorting.Any())
+        {
+            var sortKey = request.Sorting.First().SortKeySelector;
+            sortedCustomers = request.Sorting.First().SortDirection == SortDirection.Ascending
+            ? customers.OrderBy(sortKey.Compile()).ToList()
+            : customers.OrderByDescending(sortKey.Compile()).ToList();
+        }
+
+        // Implement paging
+        var pagedData = sortedCustomers.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+
+        // Return data with total count for paging purposes
+        return await Task.FromResult(new GridDataProviderResult<Customer2>
+            {
+                Data = pagedData,
+                TotalCount = customers.Count
+            });
+    }
+}

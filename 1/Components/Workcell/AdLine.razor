@@ -1,0 +1,42 @@
+@page "/adline"
+
+<ApexChart TItem="MyData"
+           Title=""
+           Options="options"
+           Width="500" Height="220">
+    <ApexPointSeries TItem="MyData"
+                     Items="Data"
+                     Name="Quantity"
+                     SeriesType="SeriesType.Line"
+                     XValue="@(e => e.Workcell)"
+                     YAggregate="@(e => e.Sum(e => e.Total))"
+                     ShowDataLabels />
+</ApexChart>
+
+@code {
+    private List<MyData> Data { get; set; } = new List<MyData>(); // Initialize Data list
+    private ApexChartOptions<MyData> options = new ApexChartOptions<MyData>(); // Initialize options
+
+    public class MyData
+    {
+        public string Workcell { get; set; }
+        public int Total { get; set; }
+    }
+
+    protected override void OnInitialized()
+    {
+        // Populate Data with sample items
+        Data.Add(new MyData { Workcell = "Jan", Total = 329 });
+        Data.Add(new MyData { Workcell = "Feb", Total = 381 });
+        Data.Add(new MyData { Workcell = "Mar", Total = 441 });
+        Data.Add(new MyData { Workcell = "Apr", Total = 451 });
+        Data.Add(new MyData { Workcell = "May", Total = 379 });
+        Data.Add(new MyData { Workcell = "Jun", Total = 713 });
+        Data.Add(new MyData { Workcell = "Jul", Total = 780 });
+        Data.Add(new MyData { Workcell = "Aug", Total = 738 });
+        Data.Add(new MyData { Workcell = "Sep", Total = 478 });
+        Data.Add(new MyData { Workcell = "Oct", Total = 616 });
+        Data.Add(new MyData { Workcell = "Nov", Total = 0 });
+        @* Data.Add(new MyData { Workcell = "Dec", Total = 0 }); *@
+    }
+}

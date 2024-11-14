@@ -1,0 +1,57 @@
+@page "/line"
+
+<ApexChart TItem="MyData"
+           Title=""
+           Options="options"
+           Width="500" Height="220">
+    <ApexPointSeries TItem="MyData"
+                     Items="Data"
+                     Name="Quantity"
+                     SeriesType="SeriesType.Line"
+                     XValue="@(e => e.Workcell)"
+                     YAggregate="@(e => e.Sum(e => e.Total))"
+                     ShowDataLabels />
+</ApexChart>
+
+@code {
+    private List<MyData> Data { get; set; } = new List<MyData>(); // Initialize Data list
+    private ApexChartOptions<MyData> options = new ApexChartOptions<MyData>(); // Initialize options
+
+    public class MyData
+    {
+        public string Workcell { get; set; }
+        public int Total { get; set; }
+    }
+
+    protected override void OnInitialized()
+    {
+        // Populate Data with sample items
+        Data.Add(new MyData { Workcell = "Jan", Total = 467 });
+        Data.Add(new MyData { Workcell = "Feb", Total = 779 });
+        Data.Add(new MyData { Workcell = "Mar", Total = 534 });
+        Data.Add(new MyData { Workcell = "Apr", Total = 882 });
+        Data.Add(new MyData { Workcell = "May", Total = 223 });
+        Data.Add(new MyData { Workcell = "Jun", Total = 0 });
+        Data.Add(new MyData { Workcell = "Jul", Total = 0 });
+        Data.Add(new MyData { Workcell = "Aug", Total = 0 });
+        Data.Add(new MyData { Workcell = "Sep", Total = 0 });
+        Data.Add(new MyData { Workcell = "Oct", Total = 0 });
+        Data.Add(new MyData { Workcell = "Nov", Total = 0 });
+        @* Data.Add(new MyData { Workcell = "Dec", Total = 160 }); *@ 
+
+         options.Yaxis = new List<YAxis>();
+
+        options.Yaxis.Add(new YAxis
+            {
+                Title = new AxisTitle { Text = "Quantity" },
+                DecimalsInFloat = 0,
+                TickAmount = 6,
+                Labels = new YAxisLabels
+                {
+                    Style = new AxisLabelStyle { FontSize = "20px",  }
+                }
+            });
+    }
+
+    
+}

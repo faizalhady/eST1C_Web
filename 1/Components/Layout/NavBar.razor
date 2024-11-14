@@ -1,0 +1,94 @@
+@using Microsoft.AspNetCore.Components
+@inject NavigationManager NavigationManager
+<!-- Navbar with Offcanvas -->
+<nav class="navbar navbar-dark fixed-top" style="height: 30px;">
+    <div class="container-fluid d-flex justify-content-between align-items-center" style="height: 100%;">
+        <!-- Left Image -->
+        <img src="\jabil.png" width="auto" height="20" class="align-self-center" />
+
+        <!-- Center Text -->
+        <p class="h6 fw-bold text-center text-uppercase  m-0" style="color: #000000;">
+            SMART TORQUE ONE-CENTER DASHBOARD
+        </p>
+
+        <!-- Right Image and Toggle Button -->
+        <div class="d-flex align-items-center">
+            <img src="\est1c.png" width="80" height="20" class="me-2 align-self-center" />
+            <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar"
+                aria-label="Toggle navigation">
+                <i class="fa-solid fa-bars fa-xs" style="color: #000000;"></i>
+            </button>
+        </div>
+
+        <!-- Offcanvas Menu -->
+        <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar"
+            aria-labelledby="offcanvasDarkNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">eST1C Menu</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <a href="/#" class="nav-link mb-3 @(NavigationManager.Uri.EndsWith("/#") ? "active" : "")">Home</a>
+                <a href="/ADVANTEST" class="nav-link mb-3 @(NavigationManager.Uri.Contains("/ADVANTEST") ? "active" : "")">ADVANTEST</a>
+                <a href="/BD" class="nav-link mb-3 @(NavigationManager.Uri.Contains("/BD") ? "active" : "")">BD</a>
+                <a href="/ONTO" class="nav-link mb-3 @(NavigationManager.Uri.Contains("/ONTO") ? "active" : "")">ONTO</a>
+                   
+            </div>
+
+        </div>
+    </div>
+</nav>
+
+
+<!-- Custom Styles -->
+<style>
+    .navbar.navbar-dark {
+        background-color: #ffffff;
+        padding: 0;
+        /* No extra padding */
+        height: 40px;
+    }
+
+    .navbar img {
+        max-height: 100%;
+        /* Ensure image fits within the navbar height */
+    }
+
+    .offcanvas-body .nav-link {
+        font-size: 1rem;
+    }
+
+    .fa-solid {
+        background-color: #6e1212;
+    }
+
+
+    .navbar.navbar-dark {
+        background-color: #ffffff;
+        padding: 0;
+        height: 40px;
+    }
+
+    .navbar img {
+        max-height: 100%;
+    }
+
+    .offcanvas{
+        width: 20px;
+    }
+
+    .offcanvas-body .nav-link {
+        font-size: 1rem;
+        padding: 10px 15px; /* Adjust padding as needed */
+        
+        display: block; /* Ensures the link takes full width */
+    }
+    .offcanvas-body .nav-link.active {
+        background-color: #e0f0ff; /* Light blue background for active link */
+        color: #0044cc !important; /* Change text color to blue for active link */
+        border-radius: 0; /* Remove rounding for full rectangle */
+        width: 100%; /* Make background cover full width */
+    }
+</style>
