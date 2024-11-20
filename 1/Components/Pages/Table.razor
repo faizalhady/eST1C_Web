@@ -2,10 +2,10 @@
 @using System.Collections.Generic
 @using BlazorBootstrap
 
-<div class="container-fluid">
-    <Grid TItem="Customer2" Class="table table-hover table-bordered text-wrap table-sm"
+
+    <Grid TItem="Customer2" Class="table table-hover table-bordered text-wrap table-sm me-0"
         DataProvider="CustomersDataProvider" AllowPaging="true" AllowSorting="true" FixedHeader="true" Responsive="true"
-        PageSize="8" Height="158">
+        PageSize="10" Height=@Height>
         <GridColumns>
             <GridColumn TItem="Customer2" FreezeLeftPosition="0" HeaderText="No" PropertyName="No" SortString="No"
                 SortKeySelector="item => item.No" FilterTextboxWidth="50" HeaderTextAlignment="Alignment.Center"
@@ -16,23 +16,23 @@
                 SortString="Brand" SortKeySelector="item => item.Brand" FilterTextboxWidth="80">
                 @context.Brand
             </GridColumn>
-            <GridColumn TItem="Customer2" HeaderText="Model" PropertyName="Model" SortString="Model"
+            <GridColumn TItem="Customer2" HeaderText="Torque Model" PropertyName="Model" SortString="Model"
                 SortKeySelector="item => item.Model" FilterTextboxWidth="100">
                 @context.Model
             </GridColumn>
-            <GridColumn TItem="Customer2" HeaderText="Torque Range (lbf-in)" PropertyName="TorqueRangeLbfIn"
+            <GridColumn TItem="Customer2" HeaderText="Torque Range" PropertyName="TorqueRangeLbfIn"
                 SortString="TorqueRangeLbfIn" SortKeySelector="item => item.TorqueRangeLbfIn" FilterTextboxWidth="120">
                 @context.TorqueRangeLbfIn
             </GridColumn>
             <GridColumn TItem="Customer2" FreezeDirection="FreezeDirection.Right" FreezeRightPosition="0"
-                HeaderText="Quantity" PropertyName="Quantity" SortString="Quantity"
-                SortKeySelector="item => item.Quantity" FilterTextboxWidth="80">
+                HeaderText="Torque Serial No." PropertyName="Quantity" SortString="Quantity"
+                SortKeySelector="item => item.Quantity" FilterTextboxWidth="2">
                 @context.Quantity
             </GridColumn>
         </GridColumns>
 
     </Grid>
-</div>
+
 
 <style>
     .table-sm .table td,
@@ -55,32 +55,34 @@
         public string? Quantity { get; set; } // Corresponds to "Quantity"
     }
 
+    [Parameter] public float Height {get; set;} = 500;
+
 
     // Provide static data for the table
     private async Task<GridDataProviderResult<Customer2>> CustomersDataProvider(GridDataProviderRequest<Customer2> request)
     {
         var customers = new List<Customer2>
             {
-            new Customer2 { No = 1, Brand = "Desoutter", Model = "EABC60-370 ", TorqueRangeLbfIn = "88.51 ~ 531.04", Quantity = "3" },
-            new Customer2 { No = 2, Brand = "Desoutter", Model = "EPBC8-1800-4Q", TorqueRangeLbfIn = "13.28 ~ 70.81", Quantity = "3" },
-            new Customer2 { No = 3, Brand = "Desoutter", Model = "ERS12", TorqueRangeLbfIn = "13.30 ~ 106.20", Quantity = "5" },
-            new Customer2 { No = 4, Brand = "Desoutter", Model = "ERS2", TorqueRangeLbfIn = "2.0 ~ 22.10", Quantity = "8" },
-            new Customer2 { No = 5, Brand = "Desoutter", Model = "ERS6", TorqueRangeLbfIn = "8.80 ~ 53.10", Quantity = "7" },
-            new Customer2 { No = 6, Brand = "Desoutter", Model = "ERXS20", TorqueRangeLbfIn = "0.30 ~ 1.77", Quantity = "2" },
-            new Customer2 { No = 7, Brand = "Hantas", Model = "MD-2611", TorqueRangeLbfIn = "3.47 ~ 29.51", Quantity = "2" },
-            new Customer2 { No = 8, Brand = "Hantas", Model = "MD2601", TorqueRangeLbfIn = "0.26 ~ 3.47", Quantity = "1" },
-            new Customer2 { No = 9, Brand = "Hantas", Model = "MD2602", TorqueRangeLbfIn = "0.43 ~ 6.07", Quantity = "3" },
-            new Customer2 { No = 10, Brand = "Hantas", Model = "MD3202", TorqueRangeLbfIn = "1.73 ~ 19.09", Quantity = "81" },
-            new Customer2 { No = 11, Brand = "Hantas", Model = "MD3203", TorqueRangeLbfIn = "2.0 ~ 22.0", Quantity = "4" },
-            new Customer2 { No = 12, Brand = "Hantas", Model = "MD3204", TorqueRangeLbfIn = "3.47 ~ 34.72", Quantity = "13" },
-            new Customer2 { No = 13, Brand = "Hantas", Model = "MD3208", TorqueRangeLbfIn = "6.07 ~ 65.10", Quantity = "1" },
-            new Customer2 { No = 14, Brand = "Hantas", Model = "MD3210", TorqueRangeLbfIn = "7.0 ~ 75.51", Quantity = "4" },
-            new Customer2 { No = 15, Brand = "Hantas", Model = "MD3211", TorqueRangeLbfIn = "8.68 ~ 78.12", Quantity = "8" },
-            new Customer2 { No = 16, Brand = "Hantas", Model = "MD3216", TorqueRangeLbfIn = "17.36 ~ 121.52", Quantity = "98" },
-            new Customer2 { No = 17, Brand = "Sehan ", Model = "HD150-A", TorqueRangeLbfIn = "3.0 ~ 11.7", Quantity = "2" },
-            new Customer2 { No = 18, Brand = "Sehan ", Model = "HD150-AJ", TorqueRangeLbfIn = "3.0 ~ 11.7", Quantity = "1" },
-            new Customer2 { No = 19, Brand = "Sehan ", Model = "HD220-V2J", TorqueRangeLbfIn = "5.2 ~ 22.5", Quantity = "2" },
-            new Customer2 { No = 20, Brand = "Sehan ", Model = "HD220J-A", TorqueRangeLbfIn = "5.2 ~ 22.5", Quantity = "6" }
+            new Customer2 { No = 1, Brand = "Desoutter", Model = "EABC60-370 ", TorqueRangeLbfIn = "88.51 ~ 531.04 lbf-in", Quantity = "3" },
+            new Customer2 { No = 2, Brand = "Desoutter", Model = "EPBC8-1800-4Q", TorqueRangeLbfIn = "13.28 ~ 70.81 lbf-in", Quantity = "3" },
+            new Customer2 { No = 3, Brand = "Desoutter", Model = "ERS12", TorqueRangeLbfIn = "13.30 ~ 106.20 lbf-in", Quantity = "5" },
+            new Customer2 { No = 4, Brand = "Desoutter", Model = "ERS2", TorqueRangeLbfIn = "2.0 ~ 22.10 lbf-in", Quantity = "8" },
+            new Customer2 { No = 5, Brand = "Desoutter", Model = "ERS6", TorqueRangeLbfIn = "8.80 ~ 53.10 lbf-in", Quantity = "7" },
+            new Customer2 { No = 6, Brand = "Desoutter", Model = "ERXS20", TorqueRangeLbfIn = "0.30 ~ 1.77 lbf-in", Quantity = "2" },
+            new Customer2 { No = 7, Brand = "Hantas", Model = "MD-2611", TorqueRangeLbfIn = "3.47 ~ 29.51 lbf-in", Quantity = "2" },
+            new Customer2 { No = 8, Brand = "Hantas", Model = "MD2601", TorqueRangeLbfIn = "0.26 ~ 3.47 lbf-in", Quantity = "1" },
+            new Customer2 { No = 9, Brand = "Hantas", Model = "MD2602", TorqueRangeLbfIn = "0.43 ~ 6.07 lbf-in", Quantity = "3" },
+            new Customer2 { No = 10, Brand = "Hantas", Model = "MD3202", TorqueRangeLbfIn = "1.73 ~ 19.09 lbf-in", Quantity = "81" },
+            new Customer2 { No = 11, Brand = "Hantas", Model = "MD3203", TorqueRangeLbfIn = "2.0 ~ 22.0 lbf-in", Quantity = "4" },
+            new Customer2 { No = 12, Brand = "Hantas", Model = "MD3204", TorqueRangeLbfIn = "3.47 ~ 34.72 lbf-in", Quantity = "13" },
+            new Customer2 { No = 13, Brand = "Hantas", Model = "MD3208", TorqueRangeLbfIn = "6.07 ~ 65.10 lbf-in", Quantity = "1" },
+            new Customer2 { No = 14, Brand = "Hantas", Model = "MD3210", TorqueRangeLbfIn = "7.0 ~ 75.51 lbf-in", Quantity = "4" },
+            new Customer2 { No = 15, Brand = "Hantas", Model = "MD3211", TorqueRangeLbfIn = "8.68 ~ 78.12 lbf-in", Quantity = "8" },
+            new Customer2 { No = 16, Brand = "Hantas", Model = "MD3216", TorqueRangeLbfIn = "17.36 ~ 121.52 lbf-in", Quantity = "98" },
+            new Customer2 { No = 17, Brand = "Sehan ", Model = "HD150-A", TorqueRangeLbfIn = "3.0 ~ 11.7 lbf-in", Quantity = "2" },
+            new Customer2 { No = 18, Brand = "Sehan ", Model = "HD150-AJ", TorqueRangeLbfIn = "3.0 ~ 11.7 lbf-in", Quantity = "1" },
+            new Customer2 { No = 19, Brand = "Sehan ", Model = "HD220-V2J", TorqueRangeLbfIn = "5.2 ~ 22.5 lbf-in", Quantity = "2" },
+            new Customer2 { No = 20, Brand = "Sehan ", Model = "HD220J-A", TorqueRangeLbfIn = "5.2 ~ 22.5 lbf-in", Quantity = "6" }
 
 
             };
@@ -97,13 +99,16 @@
         }
 
         // Implement paging
-        var pagedData = sortedCustomers.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+         var pagedData = sortedCustomers
+            .Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize)
+            .ToList();
 
         // Return data with total count for paging purposes
-        return await Task.FromResult(new GridDataProviderResult<Customer2>
-            {
-                Data = pagedData,
-                TotalCount = customers.Count
-            });
+        return new GridDataProviderResult<Customer2>
+        {
+            Data = pagedData,
+            TotalCount = customers.Count
+        };
     }
 }

@@ -1,0 +1,67 @@
+@page "/dunot"
+
+<ApexChart TItem="MyData" Title="" Options=options Width="@width" Height="@height">
+    <ApexPointSeries TItem="MyData"
+                     Items="Data"
+                     Name="Total"
+                     SeriesType="SeriesType.Donut"
+                     XValue="@(e => e.Category)"
+                     YAggregate="@(e => e.Sum(e => e.NetProfit))"
+                     OrderByDescending="e=>e.Y"
+                     PointColor="e=> GetPointColor(e)"
+                     ShowDataLabels />
+</ApexChart>
+
+@code {
+    private List<MyData> Data { get; set; } = new();
+    private ApexChartOptions<MyData> options { get; set; } = new();
+    [Parameter] public string height { get; set; } = "220";
+    [Parameter] public string width { get; set; } = "500";
+
+    protected override void OnInitialized()
+    {
+        // Data remains unchanged
+        Data.Add(new MyData { Category = "Registered", NetProfit = 11 });
+        Data.Add(new MyData { Category = "In Progress", NetProfit = 28 });
+        Data.Add(new MyData { Category = "Not Registered", NetProfit = 215 });
+
+        // Legend and DataLabels options aligned with Pie Chart settings
+        options.Legend = new Legend
+        {
+            Position = LegendPosition.Bottom,
+            FontSize = "10px",
+            HorizontalAlign = ApexCharts.Align.Center,
+            FontWeight = "bolder"
+        };
+
+        options.DataLabels = new DataLabels
+        {
+            Formatter = @"function(value, { seriesIndex, w }) {
+                return w.config.series[seriesIndex];
+            }"
+        };
+    }
+
+    private string GetPointColor(MyData MyData)
+    {
+        // Color mapping for categories
+        switch (MyData.Category)
+        {
+            case "Registered":
+                return "#3ab505";
+            case "In Progress":
+                return "#ffd500";
+            case "Not Registered":
+                return "#eb4034";
+            default:
+                return "#87775d";
+        }
+    }
+
+    public class MyData
+    {
+        public string Category { get; set; }
+        public int NetProfit { get; set; }
+        public int Revenue { get; set; }
+    }
+}

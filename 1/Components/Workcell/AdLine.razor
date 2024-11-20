@@ -3,7 +3,7 @@
 <ApexChart TItem="MyData"
            Title=""
            Options="options"
-           Width="500" Height="220">
+           Width="@width" Height="@height">
     <ApexPointSeries TItem="MyData"
                      Items="Data"
                      Name="Quantity"
@@ -16,6 +16,8 @@
 @code {
     private List<MyData> Data { get; set; } = new List<MyData>(); // Initialize Data list
     private ApexChartOptions<MyData> options = new ApexChartOptions<MyData>(); // Initialize options
+         [Parameter] public string height { get; set; } = "200";
+        [Parameter] public string width { get; set; } = "700";
 
     public class MyData
     {
@@ -33,9 +35,9 @@
         Data.Add(new MyData { Workcell = "May", Total = 379 });
         Data.Add(new MyData { Workcell = "Jun", Total = 713 });
         Data.Add(new MyData { Workcell = "Jul", Total = 780 });
-        Data.Add(new MyData { Workcell = "Aug", Total = 738 });
-        Data.Add(new MyData { Workcell = "Sep", Total = 478 });
-        Data.Add(new MyData { Workcell = "Oct", Total = 616 });
+        Data.Add(new MyData { Workcell = "Aug", Total = 0 });
+        Data.Add(new MyData { Workcell = "Sep", Total = 0 });
+        Data.Add(new MyData { Workcell = "Oct", Total = 0 });
         Data.Add(new MyData { Workcell = "Nov", Total = 0 });
         @* Data.Add(new MyData { Workcell = "Dec", Total = 0 }); *@
     }

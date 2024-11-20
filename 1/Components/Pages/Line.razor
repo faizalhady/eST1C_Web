@@ -1,0 +1,279 @@
+@page "/line"
+@using System.Collections.Generic
+@inject NavigationManager NavManager
+@rendermode InteractiveServer
+
+<div>
+    <h3>Serial No: @EffectiveWorkcell</h3>
+
+    <ApexChart TItem="MyData"
+               Title=""
+               Options="options"
+               Width="@width" Height="@height">
+        <ApexPointSeries TItem="MyData"
+                         Items="@ChartData"
+                         Name="Quantity"
+                         SeriesType="SeriesType.Line"
+                         XValue="@(e => e.Workcell)"
+                         YValue="@(e => e.Total)"
+                         ShowDataLabels />
+    </ApexChart>
+</div>
+
+@code {
+    [Parameter] public string? SelectedWorkcell { get; set; }
+    private string EffectiveWorkcell => SelectedWorkcell ?? ""; // Fallback to "Overall"
+
+    private List<MyData> ChartData = new();
+
+    private Dictionary<string, List<MyData>> WorkcellChartData = new()
+    {
+        { "Overall", new List<MyData>
+            {
+                new() { Workcell = "Jan 2024", Total = 329 },
+                new() { Workcell = "Feb 2024", Total = 381 },
+                new() { Workcell = "Mar 2024", Total = 441 },
+                new() { Workcell = "Apr 2024", Total = 451 },
+                new() { Workcell = "May 2024", Total = 379 },
+                new() { Workcell = "Jun 2024", Total = 713 }
+            }
+        },
+        { "18H37459", new List<MyData>
+            {
+                new() { Workcell = "Jan 2024", Total = 2031 },
+                new() { Workcell = "Feb 2024", Total = 2813 },
+                new() { Workcell = "Mar 2024", Total = 2013 },
+                new() { Workcell = "Apr 2024", Total = 1829 },
+                new() { Workcell = "May 2024", Total = 2312 },
+                new() { Workcell = "Jun 2024", Total = 2913 },
+                new() { Workcell = "Jul 2024", Total = 1902 },
+                new() { Workcell = "Aug 2024", Total = 0 },
+                new() { Workcell = "Sep 2024", Total = 0 },
+                new() { Workcell = "Oct 2024", Total = 0 },
+                new() { Workcell = "Nov 2024", Total = 0 }
+            }
+
+        },
+        { "18H37462", new List<MyData>
+            {
+                new() { Workcell = "Jan 2024", Total = 918 },
+                new() { Workcell = "Feb 2024", Total = 2919 },
+                new() { Workcell = "Mar 2024", Total = 1273 },
+                new() { Workcell = "Apr 2024", Total = 2934 },
+                new() { Workcell = "May 2024", Total = 2617 },
+                new() { Workcell = "Jun 2024", Total = 1278 },
+                new() { Workcell = "Jul 2024", Total = 981 },
+                new() { Workcell = "Aug 2024", Total = 0 },
+                new() { Workcell = "Sep 2024", Total = 0 },
+                new() { Workcell = "Oct 2024", Total = 0 },
+                new() { Workcell = "Nov 2024", Total = 0 }
+            }
+        },
+        {"18F38056", new List<MyData>
+            {
+                new() { Workcell = "Jan 2024", Total = 1028 },
+                new() { Workcell = "Feb 2024", Total = 2013 },
+                new() { Workcell = "Mar 2024", Total = 1829 },
+                new() { Workcell = "Apr 2024", Total = 911 },
+                new() { Workcell = "May 2024", Total = 3812 },
+                new() { Workcell = "Jun 2024", Total = 1923 },
+                new() { Workcell = "Jul 2024", Total = 1029 },
+                new() { Workcell = "Aug 2024", Total = 0 },
+                new() { Workcell = "Sep 2024", Total = 0 },
+                new() { Workcell = "Oct 2024", Total = 0 },
+                new() { Workcell = "Nov 2024", Total = 0 }
+            }
+
+        },
+        { "1711010010", new List<MyData>
+            {
+                new() { Workcell = "Jan 2024", Total = 8172 },
+                new() { Workcell = "Feb 2024", Total = 3819 },
+                new() { Workcell = "Mar 2024", Total = 7182 },
+                new() { Workcell = "Apr 2024", Total = 2715 },
+                new() { Workcell = "May 2024", Total = 6172 },
+                new() { Workcell = "Jun 2024", Total = 859 },
+                new() { Workcell = "Jul 2024", Total = 918 },
+                new() { Workcell = "Aug 2024", Total = 0 },
+                new() { Workcell = "Sep 2024", Total = 0 },
+                new() { Workcell = "Oct 2024", Total = 0 },
+                new() { Workcell = "Nov 2024", Total = 0 }
+            }
+
+        },
+        { "1711010008", new List<MyData>
+            {
+                new() { Workcell = "Jan 2024", Total = 7182 },
+                new() { Workcell = "Feb 2024", Total = 1627 },
+                new() { Workcell = "Mar 2024", Total = 2516 },
+                new() { Workcell = "Apr 2024", Total = 6172 },
+                new() { Workcell = "May 2024", Total = 1921 },
+                new() { Workcell = "Jun 2024", Total = 1623 },
+                new() { Workcell = "Jul 2024", Total = 1712 },
+                new() { Workcell = "Aug 2024", Total = 0 },
+                new() { Workcell = "Sep 2024", Total = 0 },
+                new() { Workcell = "Oct 2024", Total = 0 },
+                new() { Workcell = "Nov 2024", Total = 0 }
+            }
+
+        },
+        { "1711010009", new List<MyData>
+            {
+                new() { Workcell = "Jan 2024", Total = 1627 },
+                new() { Workcell = "Feb 2024", Total = 1726 },
+                new() { Workcell = "Mar 2024", Total = 6182 },
+                new() { Workcell = "Apr 2024", Total = 8172 },
+                new() { Workcell = "May 2024", Total = 918 },
+                new() { Workcell = "Jun 2024", Total = 1829 },
+                new() { Workcell = "Jul 2024", Total = 1823 },
+                new() { Workcell = "Aug 2024", Total = 0 },
+                new() { Workcell = "Sep 2024", Total = 0 },
+                new() { Workcell = "Oct 2024", Total = 0 },
+                new() { Workcell = "Nov 2024", Total = 0 }
+            }
+
+        },
+        { "1901010075", new List<MyData>
+            {
+                new() { Workcell = "Jan 2024", Total = 1024 },
+                new() { Workcell = "Feb 2024", Total = 417 },
+                new() { Workcell = "Mar 2024", Total = 1924 },
+                new() { Workcell = "Apr 2024", Total = 618 },
+                new() { Workcell = "May 2024", Total = 1924 },
+                new() { Workcell = "Jun 2024", Total = 2813 },
+                new() { Workcell = "Jul 2024", Total = 9419 },
+                new() { Workcell = "Aug 2024", Total = 1824 },
+                new() { Workcell = "Sep 2024", Total = 618 },
+                new() { Workcell = "Oct 2024", Total = 527 },
+                new() { Workcell = "Nov 2024", Total = 2814 }
+            }
+
+        },
+        { "1901010074", new List<MyData>
+            {
+                new() { Workcell = "Jan 2024", Total = 719 },
+                new() { Workcell = "Feb 2024", Total = 1102 },
+                new() { Workcell = "Mar 2024", Total = 1445 },
+                new() { Workcell = "Apr 2024", Total = 1294 },
+                new() { Workcell = "May 2024", Total = 998 },
+                new() { Workcell = "Jun 2024", Total = 2891 },
+                new() { Workcell = "Jul 2024", Total = 614 },
+                new() { Workcell = "Aug 2024", Total = 1924 },
+                new() { Workcell = "Sep 2024", Total = 4913 },
+                new() { Workcell = "Oct 2024", Total = 1294 },
+                new() { Workcell = "Nov 2024", Total = 1829 }
+            }
+        },
+        { "20D78918", new List<MyData>
+            {
+                new() { Workcell = "Jan", Total = 917 },
+                new() { Workcell = "Feb", Total = 3912 },
+                new() { Workcell = "Mar", Total = 3912 },
+                new() { Workcell = "Apr", Total = 1023 },
+                new() { Workcell = "May", Total = 1023 },
+                new() { Workcell = "Jun", Total = 1920 },
+                new() { Workcell = "Jul", Total = 7599 },
+                new() { Workcell = "Aug", Total = 3912 },
+                new() { Workcell = "Sep", Total = 2173 },
+                new() { Workcell = "Oct", Total = 1823 },
+                new() { Workcell = "Nov", Total = 1927 }
+            }
+
+        },
+        { "20C85712", new List<MyData>
+            {
+                new() { Workcell = "Jan", Total = 1823 },
+                new() { Workcell = "Feb", Total = 1729 },
+                new() { Workcell = "Mar", Total = 1273 },
+                new() { Workcell = "Apr", Total = 2913 },
+                new() { Workcell = "May", Total = 983 },
+                new() { Workcell = "Jun", Total = 9819 },
+                new() { Workcell = "Jul", Total = 1923 },
+                new() { Workcell = "Aug", Total = 1027 },
+                new() { Workcell = "Sep", Total = 1623 },
+                new() { Workcell = "Oct", Total = 918 },
+                new() { Workcell = "Nov", Total = 1020 }
+            }
+
+
+        },
+        { "2307010107", new List<MyData>
+            {
+                new() { Workcell = "Jan", Total = 1927 },
+                new() { Workcell = "Feb", Total = 1934 },
+                new() { Workcell = "Mar", Total = 1927 },
+                new() { Workcell = "Apr", Total = 1618 },
+                new() { Workcell = "May", Total = 2103 },
+                new() { Workcell = "Jun", Total = 1462 },
+                new() { Workcell = "Jul", Total = 2183 },
+                new() { Workcell = "Aug", Total = 989 },
+                new() { Workcell = "Sep", Total = 1027 },
+                new() { Workcell = "Oct", Total = 3182 },
+                new() { Workcell = "Nov", Total = 1920 }
+            }
+
+
+        },
+        { "2307010108", new List<MyData>
+            {
+                new() { Workcell = "Jan", Total = 1841 },
+                new() { Workcell = "Feb", Total = 3012 },
+                new() { Workcell = "Mar", Total = 2934 },
+                new() { Workcell = "Apr", Total = 1728 },
+                new() { Workcell = "May", Total = 928 },
+                new() { Workcell = "Jun", Total = 3912 },
+                new() { Workcell = "Jul", Total = 1934 },
+                new() { Workcell = "Aug", Total = 1627 },
+                new() { Workcell = "Sep", Total = 1727 },
+                new() { Workcell = "Oct", Total = 3162 },
+                new() { Workcell = "Nov", Total = 2913 }
+            }
+
+
+        },
+        { "2307010109", new List<MyData>
+            {
+                new() { Workcell = "Jan", Total = 1921 },
+                new() { Workcell = "Feb", Total = 1829 },
+                new() { Workcell = "Mar", Total = 1728 },
+                new() { Workcell = "Apr", Total = 1021 },
+                new() { Workcell = "May", Total = 1723 },
+                new() { Workcell = "Jun", Total = 3201 },
+                new() { Workcell = "Jul", Total = 3941 },
+                new() { Workcell = "Aug", Total = 928 },
+                new() { Workcell = "Sep", Total = 1728 },
+                new() { Workcell = "Oct", Total = 3919 },
+                new() { Workcell = "Nov", Total = 2013 }
+            }
+
+
+        },
+    };
+
+    private ApexChartOptions<MyData> options = new ApexChartOptions<MyData>();
+    [Parameter] public string height { get; set; } = "200";
+    [Parameter] public string width { get; set; } = "700";
+
+    public class MyData
+    {
+        public string Workcell { get; set; }
+        public int Total { get; set; }
+    }
+
+    protected override void OnParametersSet()
+    {
+        Console.WriteLine($"Line Component Updated: EffectiveWorkcell = {EffectiveWorkcell}");
+
+        // Recalculate ChartData
+        if (WorkcellChartData.TryGetValue(EffectiveWorkcell, out var data))
+        {
+            ChartData = data;
+        }
+        else
+        {
+            ChartData = new List<MyData>();
+        }
+
+        StateHasChanged(); // Explicitly refresh the UI
+    }
+}

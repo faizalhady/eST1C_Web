@@ -1,0 +1,77 @@
+@page "/pie2"
+
+<ApexChart TItem="MyData" Title="" Options=options Width="@Width" Height="@Height">
+    <ApexPointSeries TItem="MyData"
+                     Items="Data"
+                     Name="Total"
+                     SeriesType="SeriesType.Pie"
+                     XValue="@(e => e.Category)"
+                     YAggregate="@(e => e.Sum(e => e.Value))"
+                     OrderByDescending="e => e.Y"
+                     PointColor="e => GetPointColor(e)"
+                     ShowDataLabels />
+</ApexChart>
+
+@code {
+    [Parameter] public string DataKey { get; set; } = "OVERVIEW"; // Parameter to select dataset
+    [Parameter] public string Height { get; set; } = "220";
+    [Parameter] public string Width { get; set; } = "500";
+
+    private List<MyData> Data { get; set; } = new();
+    private ApexChartOptions<MyData> options { get; set; } = new();
+
+    private readonly Dictionary<string, List<MyData>> dataSets = new()
+    {
+        { "Overall", new List<MyData> { new MyData { Category = "Sehan", Value = 11 }, new MyData { Category = "Desoutter", Value = 27 }, new MyData { Category = "Hantas", Value = 213 } }},
+        { "Fortive", new List<MyData> { new MyData { Category = "Sehan", Value = 1 }, new MyData { Category = "Desoutter", Value = 8 }, new MyData { Category = "Hantas", Value = 0 } }},
+        { "Becton Dickinson", new List<MyData> { new MyData { Category = "Sehan", Value = 0 }, new MyData { Category = "Desoutter", Value = 2 }, new MyData { Category = "Hantas", Value = 3 } }},
+        { "Advantest DF", new List<MyData> { new MyData { Category = "Sehan", Value = 2 }, new MyData { Category = "Desoutter", Value = 6 }, new MyData { Category = "Hantas", Value = 7 } }},
+        { "Beckman Coulter", new List<MyData> { new MyData { Category = "Sehan", Value =  0 }, new MyData { Category = "Desoutter", Value = 0 }, new MyData { Category = "Hantas", Value = 2 } }},
+        { "Gas Box", new List<MyData> { new MyData { Category = "Sehan", Value = 0 }, new MyData { Category = "Desoutter", Value = 0 }, new MyData { Category = "Hantas", Value = 8 } }},
+        { "Lam Mec", new List<MyData> { new MyData { Category = "Sehan", Value = 0 }, new MyData { Category = "Desoutter", Value = 0 }, new MyData { Category = "Hantas", Value = 163 } }},
+        { "Micron SIG", new List<MyData> { new MyData { Category = "Sehan", Value = 0 }, new MyData { Category = "Desoutter", Value = 8 }, new MyData { Category = "Hantas", Value = 27 } }},
+        { "Cohu", new List<MyData> { new MyData { Category = "Sehan", Value = 8 }, new MyData { Category = "Desoutter", Value = 0 }, new MyData { Category = "Hantas", Value = 0 } }},
+        { "Onto", new List<MyData> { new MyData { Category = "Sehan", Value = 0 }, new MyData { Category = "Desoutter", Value = 3 }, new MyData { Category = "Hantas", Value = 3 } }},
+    };
+
+    protected override void OnParametersSet()
+    {
+        // Update data based on DataKey
+        Data = dataSets.ContainsKey(DataKey) ? dataSets[DataKey] : new List<MyData>();
+
+        // Chart options setup
+        options.Legend = new Legend
+        {
+            Position = LegendPosition.Bottom,
+            FontSize = "15px",
+            HorizontalAlign = ApexCharts.Align.Center,
+            FontWeight = "bolder"
+        };
+
+        options.DataLabels = new DataLabels
+        {
+            Formatter = @"function(value, { seriesIndex, w }) {
+                return w.config.series[seriesIndex];
+            }",
+             Style = new DataLabelsStyle
+            {
+                Colors = new List<string> { "#ffffff" },
+                FontSize = "40px",
+            },
+        };
+    }
+
+    private string GetPointColor(MyData item) => item.Category switch
+    {
+        "Sehan" => "#47c0fc",
+        "Desoutter" => "#bf0020",
+        "Hantas" => "#17458f",
+        _ => "#87775d"
+    };
+
+    public class MyData
+    {
+        public string Category { get; set; }
+        public int Value { get; set; }
+    }
+}

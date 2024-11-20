@@ -1,0 +1,149 @@
+@page "/BarPlant"
+@rendermode InteractiveServer
+
+<ApexChart TItem="MyData" Title="" Width="@Width" Height="@Height" Options=options>
+    <ApexPointSeries TItem="MyData" 
+                     Items="Data" 
+                     Name="Total" 
+                     SeriesType="SeriesType.Bar" 
+                     XValue="e => e.Category"
+                     YValue="e => e.Value" 
+                     PointColor="e => GetColor(e)" 
+                     ShowDataLabels />
+</ApexChart>
+
+@code {
+    [Parameter] public string DataKey { get; set; } = "DEFAULT"; // External parameter to select the dataset
+    [Parameter] public string Height { get; set; } = "220";
+    [Parameter] public string Width { get; set; } = "500";
+
+    private List<MyData> Data { get; set; } = new();
+    private ApexChartOptions<MyData> options { get; set; } = new();
+
+    private readonly Dictionary<string, List<MyData>> DataSets = new()
+    {
+        { "Overall", new List<MyData> 
+            { 
+                new MyData { Category = "Plant 1", Value = 48 },
+                new MyData { Category = "Batu Kawan", Value = 206 }
+            } 
+        },
+        { "Fortive", new List<MyData> 
+            { 
+                new MyData { Category = "Plant 1", Value = 9 }
+            } 
+        },
+        { "Becton Dickinson", new List<MyData> 
+            { 
+                new MyData { Category = "Plant 1", Value = 5 }
+            } 
+        },
+        { "Cohu", new List<MyData> 
+            { 
+                new MyData { Category = "Plant 1", Value = 8 }
+            } 
+        },
+        { "Gas Box", new List<MyData> 
+            { 
+                new MyData { Category = "Plant 1", Value = 8 }
+            } 
+        },
+        { "Lam Mec", new List<MyData> 
+            { 
+                new MyData { Category = "Plant 1", Value = 163 }
+            } 
+        },
+        { "Beckman Coulter", new List<MyData> 
+            { 
+                new MyData { Category = "Plant 1", Value = 2 }
+            } 
+        },
+        { "Micron SIG", new List<MyData> 
+            { 
+                new MyData { Category = "Plant 1", Value = 35 }
+            } 
+        },
+        { "Onto", new List<MyData> 
+            { 
+                new MyData { Category = "Plant 1", Value = 6 }
+            } 
+        },
+        { "Advantest DF", new List<MyData> 
+            { 
+                new MyData { Category = "Plant 1", Value = 15 }
+            } 
+        }
+    };
+
+    protected override void OnParametersSet()
+    {
+        // Select the dataset based on DataKey
+        Data = DataSets.ContainsKey(DataKey) ? DataSets[DataKey] : new List<MyData>();
+
+        ConfigureChartOptions();
+    }
+
+    private void ConfigureChartOptions()
+    {
+        options.DataLabels = new DataLabels
+        {
+            Enabled = true,
+            Style = new DataLabelsStyle
+            {
+                Colors = new List<string> { "#ffffff" },
+                FontSize = "40px",
+            },
+            OffsetY = 5
+        };
+
+        options.Legend = new Legend
+        {
+            Position = LegendPosition.Bottom,
+            FontSize = "",
+            HorizontalAlign = ApexCharts.Align.Center,
+            FontWeight = ""
+        };
+
+        options.Yaxis = new List<YAxis>
+        {
+            new YAxis
+            {
+                Title = new AxisTitle { Text = "Value" },
+                DecimalsInFloat = 0,
+                TickAmount = 6,
+                Labels = new YAxisLabels
+                {
+                    Style = new AxisLabelStyle { FontSize = "20px" }
+                }
+            }
+        };
+
+        options.Xaxis = new XAxis
+        {
+            Labels = new XAxisLabels
+            {
+                Style = new AxisLabelStyle
+                {
+                    FontSize = "20px",
+                    FontWeight = "bolder"
+                }
+            }
+        };
+    }
+
+    private string GetColor(MyData item)
+    {
+        return item.Category switch
+        {
+            "Plant 1" => "#2206d4",
+            "Batu Kawan" => "#47c0fc",
+            _ => "#87775d"
+        };
+    }
+
+    public class MyData
+    {
+        public string Category { get; set; }
+        public int Value { get; set; }
+    }
+}

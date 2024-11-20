@@ -2,7 +2,7 @@
 @rendermode InteractiveServer
 
 
-<ApexChart TItem="MyData" Title="" Width="500" Height="220" Options=options>
+<ApexChart TItem="MyData" Title="" Width="@width" Height="@height" Options=options>
     <ApexPointSeries TItem="MyData" Items="Data" Name="Total" SeriesType="SeriesType.Bar" XValue="e => e.Category"
         YValue="e=> e.NetProfit" PointColor="e=> GetColor(e)" ShowDataLabels/>
     
@@ -11,6 +11,8 @@
 @code {
     private List<MyData> Data { get; set; } = new();
     private ApexChartOptions<MyData> options { get; set; } = new();
+    [Parameter]public string height {get; set;} = "220";
+    [Parameter]public string width {get; set;} = "500";
     public class MyData
     {
         public string Category { get; set; }
@@ -21,23 +23,24 @@
 
     protected override void OnInitialized()
     {
-         Data.Add(new MyData { Category = "Plant 1", NetProfit = 48, Revenue = 33 });
-        Data.Add(new MyData { Category = "Batu Kawan", NetProfit = 206, Revenue = 42 });
+         Data.Add(new MyData { Category = "Plant 1", NetProfit = 80, Revenue = 33 });
+        Data.Add(new MyData { Category = "Batu Kawan", NetProfit = 171, Revenue = 42 });
 
         options.DataLabels = new DataLabels
 {
     Enabled = true,  // Enable data labels if they are currently off
     Style = new DataLabelsStyle
     {
-        Colors = new List<string> { "#000000" } // Set color to black, or any desired color
+        Colors = new List<string> { "#ffffff" } ,
+        FontSize = "40px",
     },
-    OffsetY = 5,  // Optional: adjust label positioning if needed
+    OffsetY = 10,  // Optional: adjust label positioning if needed
 };
         
         options.Legend = new Legend
             {
                 Position = LegendPosition.Bottom,
-                FontSize = "30px",
+                FontSize = "",
                 HorizontalAlign =
             ApexCharts.Align.Center,
                 FontWeight = ""

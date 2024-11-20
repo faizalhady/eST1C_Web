@@ -1,4 +1,4 @@
-﻿@page "/old"
+@page "/TestTable"
 @using _1.Components.Layout
 @using _1.Components.Pages
 @inherits LayoutComponentBase
@@ -9,40 +9,18 @@
     <NavBar />
 </div>
 <div class="container-fluid test p-4">
-    <div class="row g-2 mb-2">
-        <div class="col-6">
-            <div id="card-plant" class="card">
+    <div class="row g-2 mb-2 h-100 d-flex flex-column " >
+        <div class="col-12 h-100">
+            <div id="card-plant" class="card" style="height: 100%;">
                 <div class="card-body p-0">
                     <h3 class="card-title p-0">Overall Smart Torque By Plant</h3>
-                    <BarPlant Height="85%" Width="205%"/>
+                    <MasterTableA />
                 </div>
             </div>
         </div>
-        <div class="col-6">
-            <div id="card-workcell" class="card">
-                <div class="card-body p-0">
-                    <h3 class="card-title p-0">Overall Smart Torque By Workcell</h3>
-                    <BarWorkcell Height="85%" Width="195%" />
-                </div>
-            </div>
-        </div>
+        
     </div>
-    <div class="row g-2">
-        <div class="col-6">
-            <div id="card-brand" class="card">
-                <div class="card-body p-0">
-                    <h3 class="card-title p-0">Overall Smart Torque By Brand</h3>
-                    <Pie Height="90%" />
-                </div>
-            </div>
-        </div>
-        <div class="col-6">
-            <div id="card-model" class="card bg-white ps-1">
-                <h5 class="card-title p-0">Overall Smart Torque By Model</h5>
-                <Table />
-            </div>
-        </div>
-    </div>
+   
 </div>
 
 
