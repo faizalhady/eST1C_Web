@@ -1,0 +1,104 @@
+@page "/masterdata2"
+@inject MasterDataService MasterDataService
+
+
+
+@if (masterInventoryList == null)
+{
+    <p>Loading...</p>
+}
+else if (!masterInventoryList.Any())
+{
+    <p>No data available.</p>
+}
+else
+{
+    <div class="container-fluid">
+
+    <table class="table table-bordered table-striped h-100 overflow-y">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Asset</th>
+                <th>Description</th>
+                <th>Torque Serial Number</th>
+                <th>Torque Model</th>
+                <th>Torque Range</th>
+                <th>Controller Serial Number</th>
+                <th>Brand</th>
+                <th>Manufacturer</th>
+                <th>Supplier</th>
+                <th>Equipment ID</th>
+                <th>Register SAP EAM</th>
+                <th>Functional Group</th>
+                <th>Assembly Group</th>
+                <th>Sector</th>
+                <th>Plant</th>
+                <th>Workcell</th>
+                <th>Cost Center</th>
+                <th>Net Book Value</th>
+                <th>User Status</th>
+                <th>Key In Date</th>
+                <th>Owner</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in masterInventoryList)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Asset</td>
+                    <td>@item.Description</td>
+                    <td>@item.TorqueSerialNumber</td>
+                    <td>@item.TorqueModel</td>
+                    <td>@item.TorqueRange</td>
+                    <td>@item.ControllerSerialNumber</td>
+                    <td>@item.Brand</td>
+                    <td>@item.Manufacturer</td>
+                    <td>@item.Supplier</td>
+                    <td>@item.EquipmentID</td>
+                    <td>@item.RegisterSAPEAM</td>
+                    <td>@item.FunctionalGroup</td>
+                    <td>@item.AssemblyGroup</td>
+                    <td>@item.Sector</td>
+                    <td>@item.Plant</td>
+                    <td>@item.Workcell</td>
+                    <td>@item.CostCenter</td>
+                    <td>@item.NetBookValue</td>
+                    <td>@item.UserStatus</td>
+                    <td>@item.KeyInDate?.ToString("yyyy-MM-dd")</td>
+                    <td>@item.Owner</td>
+                    <td>@item.Comment</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    </div>
+}
+
+@code {
+    private List<MasterInventory>? masterInventoryList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        masterInventoryList = await MasterDataService.GetAllMasterDataAsync();
+ 
+    }
+
+
+}
+
+    <style>
+    .table {
+    width: 100%;
+    height: auto;
+    table-layout: auto; /* Allows flexible column widths */
+}
+
+.card-body {
+    height: 100%;
+    overflow-y: auto;
+}
+    
+    </style>

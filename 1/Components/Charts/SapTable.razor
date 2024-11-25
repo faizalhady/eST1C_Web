@@ -1,0 +1,107 @@
+@page "/SapTable"
+@inject NavigationManager NavManager
+@inject MasterDataService MasterDataService
+@using BlazorBootstrap
+
+@if (masterInventoryList == null)
+{
+    <p>Loading...</p>
+}
+else if (!masterInventoryList.Any())
+{
+    <p>No data available for the selected filter.</p>
+}
+else
+{
+    <div class="container-fluid">
+        <Grid TItem="MasterInventory"
+              Class="table table-hover table-bordered text-wrap table-sm"
+              DataProvider="MasterDataProvider"
+              AllowPaging="true"
+              AllowSorting="true"
+              AllowFiltering="true"
+              Responsive="true"
+              PageSize="22">
+            <GridColumns>
+                <GridColumn TItem="MasterInventory" HeaderText="Id" Style="width: 10px;" FilterTextboxWidth="80">
+        @{
+            var index = masterInventoryList?.ToList().IndexOf(context) + 1 ?? 0; // Calculate dynamic ID
+            <span>@index</span>
+        }
+    </GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Workcell" PropertyName="Workcell" SortKeySelector="item => item.Workcell">
+                    @context.Workcell
+                </GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Brand" PropertyName="Brand" SortKeySelector="item => item.Brand">
+                    @context.Brand
+                </GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Torque Model" PropertyName="TorqueModel" SortKeySelector="item => item.TorqueModel">
+                    @context.TorqueModel
+                </GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Torque Serial No." PropertyName="TorqueSerialNumber" SortKeySelector="item => item.TorqueSerialNumber">
+                    @context.TorqueSerialNumber
+                </GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Register SAP EAM" PropertyName="RegisterSAPEAM" SortKeySelector="item => item.RegisterSAPEAM">
+                    @context.RegisterSAPEAM
+                </GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Registered" SortKeySelector="item => item.RegisterSAPEAM">
+                    @(string.IsNullOrWhiteSpace(context.RegisterSAPEAM) ? "Not Registered" : "Registered")
+                </GridColumn>
+            </GridColumns>
+        </Grid>
+    </div>
+}
+
+@code {
+    private string? SelectedKey { get; set; } // The selected key (Workcell or Brand)
+    private IEnumerable<MasterInventory>? masterInventoryList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Parse the query parameters to get the selectedKey
+        var uri = new Uri(NavManager.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        SelectedKey = query["selectedKey"];
+
+        try
+        {
+            Console.WriteLine($"Fetching data for filter: {SelectedKey}");
+            masterInventoryList = await MasterDataService.GetAllMasterDataAsync();
+
+            // Apply filter logic
+            if (!string.IsNullOrEmpty(SelectedKey))
+            {
+                if (SelectedKey == "Overall" || SelectedKey == "Brand")
+                {
+                    // Display the full list
+                    Console.WriteLine("Displaying full list");
+                }
+                else if (SelectedKey == "Sehan" || SelectedKey == "Hantas" || SelectedKey == "Desoutter")
+                {
+                    // Filter by Brand
+                    masterInventoryList = masterInventoryList?.Where(item => item.Brand == SelectedKey);
+                }
+                else
+                {
+                    // Filter by Workcell
+                    masterInventoryList = masterInventoryList?.Where(item => item.Workcell == SelectedKey);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching data: {ex.Message}");
+        }
+    }
+
+    private async Task<GridDataProviderResult<MasterInventory>> MasterDataProvider(GridDataProviderRequest<MasterInventory> request)
+    {
+        if (masterInventoryList == null)
+        {
+            masterInventoryList = await MasterDataService.GetAllMasterDataAsync();
+        }
+
+        // Apply filtering, sorting, and paging
+        return await Task.FromResult(request.ApplyTo(masterInventoryList));
+    }
+}

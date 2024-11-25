@@ -1,0 +1,311 @@
+@page "/1"
+@using _1.Components.Layout
+@using _1.Components.Charts
+@inherits LayoutComponentBase
+@inject NavigationManager NavManager
+@rendermode InteractiveServer
+
+<PageTitle>Workcell</PageTitle>
+
+@* ... Previous imports and declarations remain the same ... *@
+
+<div class="container-fluid vh-100 d-flex flex-column">
+    <!-- First Row -->
+    <div class="row g-1 mb-1" style="height: 12vh;">
+        <div class="col-4">
+            <div class="card h-100">
+                <div class="card-header text-center p-1">
+                    <div>First Row, Card 1</div>
+                </div>
+                <div class="card-body p-1"></div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card h-100">
+                <div class="card-header text-center p-1">
+                    <div>First Row, Card 2</div>
+                </div>
+                <div class="card-body p-1"></div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card h-100">
+                <div class="card-header text-center p-1">
+                    <div>First Row, Card 3</div>
+                </div>
+                <div class="card-body p-1"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Row -->
+    <div class="row g-1 mb-1" style="height: 35vh;">
+        <div class="col-4">
+            <div class="card h-100">
+                <div class="card-header text-center p-1">
+                    <div>Second Row, Card 1</div>
+                </div>
+                <div class="card-body p-1"></div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card h-100">
+                <div class="card-header text-center p-1">
+                    <div>Second Row, Card 2</div>
+                </div>
+                <div class="card-body p-1"></div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card h-100">
+                <div class="card-header text-center p-1">
+                    <div>Second Row, Card 3</div>
+                </div>
+                <div class="card-body p-1"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Third Row -->
+    <div class="row g-1" style="height: 30vh;">
+        <div class="col-6">
+            <div class="card h-100">
+                <div class="card-header text-center p-1">
+                    <div>Third Row, Card 1</div>
+                </div>
+                <div class="card-body p-1"></div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card h-100">
+                <div class="card-header text-center p-1">
+                    <div>Third Row, Card 2</div>
+                </div>
+                <div class="card-body p-1"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+    .header-text {
+        font-size: 0.7rem; /* Reduced font size */
+        font-weight: bold;
+        color: white;
+    }
+
+    .body-text {
+        font-size: 1.5rem; /* Reduced font size */
+    }
+
+    .btn {
+        font-size: 0.75rem; /* Reduced button font size */
+        min-width: 110px;
+        padding: 0.2rem 0.4rem;
+    }
+
+    .card-headerA { background-color: rgb(1, 100, 161); }
+    .card-headerB { background-color: rgb(0, 143, 81); }
+    .card-headerC { background-color: rgb(220, 88, 42); }
+    .card-headerR { background-color: rgb(0, 82, 136); }
+
+    .side-nav {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+    }
+
+    .side-nav::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .side-nav::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 2px;
+    }
+
+    .vh-100 {
+        height: 100vh;
+    }
+</style>
+
+
+
+
+@code {
+    private bool showWorkcell = true;
+    private bool showNotification = false;
+
+    private string selectedKey = "Overall"; // Default dataset
+    private List<string> ButtonLabels = new() { "Overall", "Onto", "Beckman Coulter","Becton Dickinson","Advantest DF", "Fortive", "Cohu","Gas Box", "Lam Mec", "Micron SIG" };
+    private List<string> ButtonBrand = new() { "Overall","Hantas","Desoutter","Sehan" };
+    private List<string> ButtonRange = new() { "Overall" };
+
+    private string? ChildSelectedWorkcell = null;
+
+    private void OnRowClicked(string workcellName)
+    {
+        ChildSelectedWorkcell = workcellName; // Update child dynamically
+        Console.WriteLine($"Row clicked: {workcellName}");
+    }
+    private void UpdateDataKey(string key)
+    {
+        ChildSelectedWorkcell = "";
+        selectedKey = key; // Update the dataset key
+    }
+    private void UpdateDataNavKey(string key)
+    {
+         if(key == "Overall"){
+            key = "Brand";
+        }
+        ChildSelectedWorkcell = "";
+        NavManager.NavigateTo($"/newpage?selectedKey={key}");
+        selectedKey = key; // Update the dataset key
+    }
+    public void RangeNav(){
+        NavManager.NavigateTo("/range");
+    }
+    private void ShowWorkcell()
+    {
+        showWorkcell = true;
+    }
+
+    private void ShowPlant()
+    {
+        showWorkcell = false;
+    }
+
+    protected override void OnInitialized()
+    {
+        // Run the timer logic in a separate task
+        Task.Run(() => ToggleNotificationAsync());
+        // Parse query parameters
+        var uri = new Uri(NavManager.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+        // Get the selectedKey parameter, defaulting to "Overall" if it's not provided
+        selectedKey = query["selectedKey"] ?? "Overall";
+
+         NavManager.LocationChanged += OnLocationChanged;
+        
+        // Set initial parameter values
+        UpdateSelectedKeyFromUri();
+    }
+
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        UpdateSelectedKeyFromUri();
+    }
+
+    private void UpdateSelectedKeyFromUri()
+    {
+        // Parse query parameters
+        var uri = new Uri(NavManager.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+        // Update the selectedKey parameter, defaulting to "Overall" if not provided
+        var newSelectedKey = query["selectedKey"] ?? "Overall";
+
+        if (selectedKey != newSelectedKey)
+        {
+            selectedKey = newSelectedKey;
+            StateHasChanged(); // Force re-render
+        }
+    }
+
+    private async Task ToggleNotificationAsync()
+    {
+        while (true)
+        {
+            showNotification = true; // Show the notification
+            InvokeAsync(StateHasChanged); // Safely notify Blazor of state change
+
+            await Task.Delay(20000); // Keep the notification visible for 10 seconds
+            showNotification = false; // Hide the notification
+            InvokeAsync(StateHasChanged); // Safely notify Blazor of state change
+
+            await Task.Delay(10000); // Wait for 10 seconds before showing again
+        }
+    }
+
+
+    private string GetContent(int cardNumber)
+{
+    return selectedKey switch
+    {
+        "Overall" => cardNumber switch
+        {
+            1 => "251",
+            2 => "245",
+            3 => "6",
+            _ => "Default Content"
+        },
+        "Advantest DF" => cardNumber switch
+        {
+            1 => "15",
+            2 => "15",
+            3 => "0",
+            _ => "Default Content"
+        },
+        "Fortive" => cardNumber switch
+        {
+            1 => "9",
+            2 => "9",
+            3 => "0",
+            _ => "Default Content"
+        },
+        "Gas Box" => cardNumber switch
+        {
+            1 => "8",
+            2 => "8",
+            3 => "0",
+            _ => "Default Content"
+        },
+        "Lam Mec" => cardNumber switch
+        {
+            1 => "163",
+            2 => "163",
+            3 => "0",
+            _ => "Default Content"
+        },
+        "Beckman Coulter" => cardNumber switch
+        {
+            1 => "2",
+            2 => "2",
+            3 => "0",
+            _ => "Default Content"
+        },
+        "Micron SIG" => cardNumber switch
+        {
+            1 => "35",
+            2 => "35",
+            3 => "0",
+            _ => "Default Content"
+        },
+        "Becton Dickinson" => cardNumber switch
+        {
+            1 => "5",
+            2 => "5",
+            3 => "0",
+            _ => "Default Content"
+        },
+        "Onto" => cardNumber switch
+        {
+            1 => "6",
+            2 => "0",
+            3 => "6",
+            _ => "Default Content"
+        },
+        "Cohu" => cardNumber switch
+        {
+            1 => "8",
+            2 => "8",
+            3 => "0",
+            _ => "Default Content"
+        },
+        _ => "Default Content"
+    };
+}
+
+}

@@ -1,0 +1,100 @@
+@page "/masterdata"
+@inject MasterDataService MasterDataService
+@using BlazorBootstrap
+
+@if (masterInventoryList == null)
+{
+    <p>Loading...</p>
+}
+else if (!masterInventoryList.Any())
+{
+    <p>No data available.</p>
+}
+else
+{
+    <div class="container-fluid">
+        <Grid TItem="MasterInventory"
+              Class="table table-hover table-bordered text-wrap table-sm"
+              DataProvider="MasterDataProvider"
+              AllowPaging="true"
+              AllowSorting="true"
+              AllowFiltering="true"
+              Responsive="true"
+              PageSize="22">
+            <GridColumns>
+                <GridColumn TItem="MasterInventory" HeaderText="Id" PropertyName="Id">@context.Id</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Asset" PropertyName="Asset">@context.Asset</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Description" PropertyName="Description">@context.Description</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Torque Serial No." PropertyName="TorqueSerialNumber">@context.TorqueSerialNumber</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Torque Model" PropertyName="TorqueModel">@context.TorqueModel</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Torque Range" PropertyName="TorqueRange">@context.TorqueRange</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Controller Serial No." PropertyName="ControllerSerialNumber">@context.ControllerSerialNumber</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Brand" PropertyName="Brand">@context.Brand</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Manufacturer" PropertyName="Manufacturer">@context.Manufacturer</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Supplier" PropertyName="Supplier">@context.Supplier</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Equipment ID" PropertyName="EquipmentID">@context.EquipmentID</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Register SAP EAM" PropertyName="RegisterSAPEAM">@context.RegisterSAPEAM</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Functional Group" PropertyName="FunctionalGroup">@context.FunctionalGroup</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Assembly Group" PropertyName="AssemblyGroup">@context.AssemblyGroup</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Sector" PropertyName="Sector">@context.Sector</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Plant" PropertyName="Plant">@context.Plant</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Workcell" PropertyName="Workcell">@context.Workcell</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Cost Center" PropertyName="CostCenter">@context.CostCenter</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Net Book Value" PropertyName="NetBookValue">@context.NetBookValue</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="User Status" PropertyName="UserStatus">@context.UserStatus</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Key In Date" PropertyName="KeyInDate">@context.KeyInDate?.ToString("yyyy-MM-dd")</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Owner" PropertyName="Owner">@context.Owner</GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Comment" PropertyName="Comment">@context.Comment</GridColumn>
+            </GridColumns>
+        </Grid>
+    </div>
+}
+
+@code {
+    private List<MasterInventory>? masterInventoryList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Console.WriteLine("Fetching data...");
+            masterInventoryList = await MasterDataService.GetAllMasterDataAsync();
+            Console.WriteLine($"Data fetched successfully. Count: {masterInventoryList?.Count}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching data: {ex.Message}");
+        }
+    }
+
+    private async Task<GridDataProviderResult<MasterInventory>> MasterDataProvider(GridDataProviderRequest<MasterInventory> request)
+    {
+        if (masterInventoryList == null)
+        {
+            masterInventoryList = await MasterDataService.GetAllMasterDataAsync();
+        }
+
+        // Sort data
+        var sortedData = masterInventoryList;
+        if (request.Sorting is not null && request.Sorting.Any())
+        {
+            var sortKey = request.Sorting.First().SortKeySelector;
+            sortedData = request.Sorting.First().SortDirection == SortDirection.Ascending
+                ? masterInventoryList.OrderBy(sortKey.Compile()).ToList()
+                : masterInventoryList.OrderByDescending(sortKey.Compile()).ToList();
+        }
+
+        // Apply paging
+        var pagedData = sortedData
+            .Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize)
+            .ToList();
+
+        // Return data with total count
+        return new GridDataProviderResult<MasterInventory>
+        {
+            Data = pagedData,
+            TotalCount = masterInventoryList.Count
+        };
+    }
+}

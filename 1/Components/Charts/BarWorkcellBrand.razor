@@ -1,0 +1,187 @@
+@page "/BarWorkcell"
+@rendermode InteractiveServer
+
+<ApexChart TItem="MyData" Title="" Width="@Width" Height="@Height" Options=options>
+    @if (DataKey == "Overall")
+    {
+        <ApexPointSeries TItem="MyData" Items="Data" Name="Sehan" SeriesType="SeriesType.Bar" 
+                 XValue="e => e.Workcell" YValue="e => e.Sehan" PointColor="@(_ => GetPointColor("Sehan"))" ShowDataLabels />
+<ApexPointSeries TItem="MyData" Items="Data" Name="Hantas" SeriesType="SeriesType.Bar" 
+                 XValue="e => e.Workcell" YValue="e => e.Hantas" PointColor="@(_ => GetPointColor("Hantas"))" ShowDataLabels />
+<ApexPointSeries TItem="MyData" Items="Data" Name="Desoutter" SeriesType="SeriesType.Bar" 
+                 XValue="e => e.Workcell" YValue="e => e.Desoutter" PointColor="@(_ => GetPointColor("Desoutter"))" ShowDataLabels />
+
+
+    }
+    else
+    {
+        <ApexPointSeries TItem="MyData" Items="Data" Name="Total" SeriesType="SeriesType.Bar" 
+                         XValue="e => e.Workcell" YValue="e => e.Total" PointColor="e=> GetColor(e)"
+ ShowDataLabels />
+    }
+</ApexChart>
+
+
+
+@code {
+    [Parameter] public string DataKey { get; set; } = "Overall"; // External parameter to select the dataset
+    [Parameter] public string Height { get; set; } = "220";
+    [Parameter] public string Width { get; set; } = "500";
+
+    private List<MyData> Data { get; set; } = new(); // Current dataset
+    private ApexChart<MyData> chart;
+    private ApexChartOptions<MyData> options { get; set; } = new();
+    private string dataUri;
+
+    private readonly Dictionary<string, List<MyData>> DataSets = new()
+    {
+        { "Overall", new List<MyData> 
+            {
+                new MyData { Workcell = "Becton Dickinson", Sehan = 50, Hantas = 50, Desoutter = 50 },
+                new MyData { Workcell = "Advantest DF", Sehan = 50, Hantas = 50, Desoutter = 50 },
+                new MyData { Workcell = "Cohu", Sehan = 50, Hantas = 50, Desoutter = 50 },
+                new MyData { Workcell = "Beckman Coulter", Sehan = 50, Hantas = 50, Desoutter = 50  },
+                new MyData { Workcell = "Fortive", Sehan = 50, Hantas = 50, Desoutter = 50  },
+                new MyData { Workcell = "Gas Box", Sehan = 50, Hantas = 50, Desoutter = 50  },
+                new MyData { Workcell = "Lam Mec", Sehan = 50, Hantas = 50, Desoutter = 50  },
+                new MyData { Workcell = "Onto", Sehan = 50, Hantas = 50, Desoutter = 50  },
+                new MyData { Workcell = "Micron SIG", Sehan = 50, Hantas = 50, Desoutter = 50  },
+            } 
+        },
+        { "Sehan", new List<MyData> 
+            { 
+                new MyData { Workcell = "Advantest DF", Total = 2 },
+                new MyData { Workcell = "Cohu", Total = 8 },
+                new MyData { Workcell = "Fortive", Total = 1 },
+            } 
+        },
+        { "Hantas", new List<MyData> 
+            { 
+                new MyData { Workcell = "Becton Dickinson", Total = 3 },
+                new MyData { Workcell = "Advantest DF", Total = 7 },
+                new MyData { Workcell = "Cohu", Total = 8 },
+                new MyData { Workcell = "Beckman Coulter", Total = 2 },
+                new MyData { Workcell = "Fortive", Total = 9 },
+                new MyData { Workcell = "Gas Box", Total = 8 },
+                new MyData { Workcell = "Lam Mec", Total = 163 },
+                new MyData { Workcell = "Onto", Total = 3 },
+                new MyData { Workcell = "Micron SIG", Total = 27 },
+            } 
+        },
+        { "Desoutter", new List<MyData> 
+            { 
+                new MyData { Workcell = "Fortive", Total = 8 },
+                new MyData { Workcell = "Becton Dickinson", Total = 2 },
+                new MyData { Workcell = "Micron SIG", Total = 8 },
+                new MyData { Workcell = "Advantest DF", Total = 6 },
+                new MyData { Workcell = "Onto", Total = 3 },
+            } 
+        }
+    };
+
+    protected override void OnParametersSet()
+    {
+        // Update data based on DataKey
+        Data = DataSets.ContainsKey(DataKey) ? DataSets[DataKey] : new List<MyData>();
+
+        ConfigureChartOptions();
+    }
+
+    private void ConfigureChartOptions()
+    {
+        options.Chart = new Chart
+        {
+            Stacked = true, // Enable stacked bars
+            Toolbar = new Toolbar { Show = false } // Hide toolbar if not needed
+        };
+        options.DataLabels = new DataLabels
+        {
+            Enabled = true,
+            Style = new DataLabelsStyle
+            {
+                Colors = new List<string> { "#000000" },
+                FontSize = "25px"
+            },
+            OffsetY = -10
+        };
+
+        options.Legend = new Legend
+        {
+            Position = LegendPosition.Bottom,
+            FontSize = "20px",
+            HorizontalAlign = ApexCharts.Align.Center,
+            FontWeight = "bolder"
+        };
+
+        options.Yaxis = new List<YAxis>
+        {
+            new YAxis
+            {
+                Title = new AxisTitle { Text = "Quantity" },
+                DecimalsInFloat = 0,
+                TickAmount = 6,
+                Labels = new YAxisLabels
+                {
+                    Style = new AxisLabelStyle { FontSize = "20px" }
+                }
+            }
+        };
+
+        options.Xaxis = new XAxis
+        {
+            Labels = new XAxisLabels
+            {
+                Style = new AxisLabelStyle
+                {
+                    FontSize = "13px",
+                    FontWeight = "bolder"
+                }
+            }
+        };
+    }
+
+    private string GetColor(MyData order)
+    {
+        return order.Workcell switch
+        {
+            "Becton Dickinson" => "#16f2a5",
+            "Advantest DF" => "#73d118",
+            "Cohu" => "#f312ab",
+            "Beckman Coulter" => "#5e877b",
+            "Fortive" => "#af6572",
+            "Lam Mec" => "#91ff87",
+            "Gas Box" => "#91ff87",
+            "Micron SIG" => "#91ff87",
+            "Onto" => "#91ff87",
+            _ => "#000000" // Default color
+        };
+    }
+
+    private void ModalClosed()
+    {
+        dataUri = string.Empty;
+    }
+
+    private async Task DataUri()
+    {
+        var options = new DataUriOptions { Width = 400 };
+        dataUri = await chart.GetDataUriAsync(options);
+    }
+
+    public class MyData
+    {
+        public string Workcell { get; set; }
+        public int Total { get; set; }
+        public int Hantas { get; set; }
+        public int Sehan { get; set; }
+        public int Desoutter { get; set; }
+    }
+
+         private string GetPointColor(string seriesName) => seriesName switch
+{
+    "Sehan" => "#47c0fc",
+    "Desoutter" => "#bf0020",
+    "Hantas" => "#17458f",
+    _ => "#87775d"
+};
+}

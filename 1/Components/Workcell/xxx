@@ -1,5 +1,0 @@
- new Customer2 { No = 16, Brand = "Sehan", Model = "HD220-V2J", TorqueRangeLbfIn = "5.2 ~ 22.5 lbf.in", Quantity = "2" }
-       new Customer2 { No = 10, Brand = "Hantas", Model = "MD3204", TorqueRangeLbfIn = "3.47 ~ 34.72 lbf.in", Quantity = "12" },
-       new Customer2 { No = 10, Brand = "Hantas", Model = "MD3211", TorqueRangeLbfIn = "8.68 ~ 78.12 lbf.in", Quantity = "7" },
-       new Customer2 { No = 3, Brand = "Desoutter", Model = "ERS2", TorqueRangeLbfIn = "2.0 ~ 22.10 lbf.in", Quantity = "4" },
-       new Customer2 { No = 5, Brand = "Desoutter", Model = "ERS12", TorqueRangeLbfIn = "13.30 ~ 106.20 lbf.in", Quantity = "4" },

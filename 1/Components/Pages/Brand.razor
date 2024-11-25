@@ -1,11 +1,13 @@
-@page "/"
+@page "/newpage"
+@inject NavigationManager NavigationManager
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
 @using _1.Components.Layout
 @using _1.Components.Charts
 @inherits LayoutComponentBase
 @inject NavigationManager NavManager
 @rendermode InteractiveServer
+<PageTitle>Brand</PageTitle>
 
-<PageTitle>Workcell</PageTitle>
 
 <div class="container-fluid vh-100 d-flex flex-column overflow-hidden" style="height: 100%;">
     <!-- Main Content -->
@@ -45,12 +47,18 @@
                 <div class="card-body d-flex flex-column align-items-center gap-1 p-1 overflow-auto side-nav">
                     <!-- Buttons -->
                     <div class="d-grid gap-1">
+                          <button class="btn @(selectedKey == "Brand" ? "btn-primary" : "btn-outline-primary")"
+                            @onclick='@(() => UpdateDataNavKey("Brand"))'>
+                            Overall
+                                    </button>
                         @foreach (var buttonLabel in ButtonBrand)
                         {
-                            <button class="btn btn-outline-primary"
+
+                            <button class="btn @(selectedKey == buttonLabel ? "btn-primary" : "btn-outline-primary")"
                                 @onclick="() => UpdateDataNavKey(buttonLabel)">
                                 @buttonLabel
                             </button>
+                            
                         }
                     </div>
 
@@ -63,12 +71,10 @@
                 <div class="card-body d-flex flex-column align-items-center gap-1 p-1 overflow-auto side-nav">
                     <!-- Buttons -->
                     <div class="d-grid gap-1">
-                       
-                            <button class="btn btn-outline-primary"
+                        <button class="btn btn-outline-primary"
                                 @onclick="() => RangeNav()">
                                 Overall
                             </button>
-                        
                     </div>
 
                 </div>
@@ -82,7 +88,13 @@
                 <div class="col-4">
                     <div id="card-1" class="card h-100 p-0">
                         <div class="card-headerA text-center p-2 m-0">
+                            @if(@selectedKey =="Brand")
+                            {
+                            <div class="header-text">Overall Smart Torque</div>
+                            }else
+                            {
                             <div class="header-text">@selectedKey Smart Torque</div>
+                            }
                         </div>
                         <div class="card-body d-flex align-items-center justify-content-center p-0 m-0">
                             <div class="body-text">@GetContent(1)</div>
@@ -92,7 +104,13 @@
                 <div class="col-4">
                     <div id="card-1" class="card h-100 p-0">
                         <div class="card-headerB text-center p-2 m-0">
+                            @if(@selectedKey =="Brand")
+                            {
+                            <div class="header-text">Overall Active Smart Torque</div>
+                            }else
+                            {
                             <div class="header-text">@selectedKey Active Smart Torque</div>
+                            }
                         </div>
                         <div class="card-body d-flex align-items-center justify-content-center p-0 m-0">
                             <div class="body-text">@GetContent(2)</div>
@@ -102,7 +120,13 @@
                 <div class="col-4">
                     <div id="card-3" class="card h-100 p-0">
                         <div class="card-headerC text-center p-2 m-0">
+                            @if(@selectedKey =="Brand")
+                            {
+                            <div class="header-text">Overall Idle Smart Torque</div>
+                            }else
+                            {
                             <div class="header-text">@selectedKey Idle Smart Torque</div>
+                            }
                         </div>
                         <div class="card-body d-flex align-items-center justify-content-center p-0 m-0">
                             <div class="body-text">@GetContent(3)</div>
@@ -113,73 +137,60 @@
 
             <!-- Second Row -->
             <div class="row g-2 mb-2" style="flex: 0 0 43%;"> <!-- Adjusted height -->
-                <div class="col-3">
-                    <div id="card-7" class="card h-100 d-flex flex-column">
-                        <div class="card-headerR text-center p-2 m-0">
-                            <div class="header-text">@selectedKey Smart Torque By Brand</div>
-                        </div>
-                        <div class="flex-grow-1">
-                            <Pie2 DataKey="@selectedKey" Height="100%" Width="100%" @key="@($"{selectedKey}_Pie")" />
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
+
+                <div class="col-8">
                     <div id="card-6" class="card h-100 d-flex flex-column">
-                        @if (selectedKey == "Overall")
-                        {
-                            <div class="card-headerR text-center p-2 m-0">
-                                <div style="display: flex; align-items: center; position: relative; font-weight: bold;"
-                                    class="pt-0">
-                                    <div style="flex: 1; text-align: center; color: white;">@selectedKey Smart Torque By @(showWorkcell ?
-                                    "Workcell" : "Plant" )</div>
-                                    <div style="position: absolute; right: 0;" class="p-2 pt-2">
-                                        <div class="btn-group">
-                                            <button
-                                                class="btn btn-sm @(showWorkcell ? "btn-outline-primary" : "btn-primary")"
-                                                @onclick="ShowPlant">Plant</button>
-                                            <button
-                                                class="btn btn-sm @(showWorkcell ? "btn-primary" : "btn-outline-primary")"
-                                                @onclick="ShowWorkcell">Workcell</button>
-                                        </div>
+
+                        <div class="card-headerR text-center p-2 m-0">
+                            <div style="display: flex; align-items: center; position: relative; font-weight: bold;"
+                                class="pt-0">
+                                <div style="flex: 1; text-align: center; color: white;">@selectedKey Smart Torque By
+                                    @(showWorkcell ?
+                                        "Workcell" : "Plant")</div>
+                                <div style="position: absolute; right: 0;" class="p-2 pt-2">
+                                    <div class="btn-group">
+                                        <button
+                                            class="btn btn-sm @(showWorkcell ? "btn-outline-primary" : "btn-primary")"
+                                            @onclick="ShowPlant">Plant</button>
+                                        <button
+                                            class="btn btn-sm @(showWorkcell ? "btn-primary" : "btn-outline-primary")"
+                                            @onclick="ShowWorkcell">Workcell</button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex-grow-1 p-3">
-                                @if (showWorkcell)
-                                {
-                                    <BarWorkcell Height="100%" Width="100%" />
-                                }
-                                else
-                                {
-                                    <BarPlant Height="100%" Width="100%" />
-                                }
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="card-headerR text-center p-2 m-0">
-                                <div style="display: flex; align-items: center; position: relative; font-weight: bold;"
-                                    class="pt-0">
-                                    <div style="flex: 1; text-align: center; color: white;">@selectedKey Smart Torque By Plant</div>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 p-3">
+                        </div>
+                        <div class="flex-grow-1 p-3">
+                            @if (showWorkcell)
+                            {
+                                <BarWorkcell DataKey="@selectedKey" Height="100%" Width="100%"
+                                    @key="@($"{selectedKey}_BarWorkcell")" />
+                            }
+                            else
+                            {
                                 <BarPlant2 DataKey="@selectedKey" Height="100%" Width="100%"
                                     @key="@($"{selectedKey}_BarPlant2")" />
-                            </div>
-                        }
+                            }
+                        </div>
+
                     </div>
 
                 </div>
-                <div class="col-3">
+                <div class="col-4">
                     <div id="card-7" class="card h-100 d-flex flex-column">
                         <div class="card-headerR text-center p-2 m-0">
-                            
+
                             <div class="header-text">@selectedKey SAP EAM</div>
                         </div>
                         <div class="flex-grow-1 p-0 m-0">
-                            <Donut2 DataKey="@selectedKey" Height="100%" Width="100%"
+                            @if(@selectedKey == "Brand")
+                            {
+                                <BrandSAP DataKey="@selectedKey" Height="100%" Width="100%"
+                                @key="@($"{selectedKey}_BrandSAP")" />
+                            }else 
+                            {
+                                <Donut2 DataKey="@selectedKey" Height="100%" Width="100%"
                                 @key="@($"{selectedKey}_Donut")" />
+                            }
                         </div>
                     </div>
                 </div>
@@ -187,34 +198,37 @@
 
             <!-- Third Row -->
             <div class="row g-2" style="flex: 0 0 45%;"> <!-- Adjusted height -->
-    <div class="col-6">
-        <div id="card-8" class="card h-100 d-flex flex-column">
-            <div class="card-headerR text-center p-2 m-0">
-                <div class="header-text">@selectedKey Smart Torque Details</div>
+                <div class="col-6">
+                    <div id="card-8" class="card h-100 d-flex flex-column">
+                        <div class="card-headerR text-center p-2 m-0">
+                            <div class="header-text">@selectedKey Smart Torque Details</div>
+                        </div>
+                        <div class="flex-grow-1 p-4" style="overflow-y: auto; max-height: 400px;">
+                            <!-- Added scrolling -->
+                            <Table2 DataKey="@selectedKey" @key="@($"{selectedKey}_Table2")"
+                                RowClicked="OnRowClicked" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div id="card-9" class="card h-100 d-flex flex-column">
+                        <div class="card-headerR text-center p-2 m-0">
+                            @if (selectedKey == "Overall")
+                            {
+                                <div class="header-text">Smart Torque Cycle Count</div>
+                            }
+                            else
+                            {
+                                <div class="header-text">@selectedKey Smart Torque Cycle Count</div>
+                            }
+                        </div>
+                        <div class="flex-grow-1 p-4">
+                            <Line @key="@ChildSelectedWorkcell" SelectedWorkcell="@ChildSelectedWorkcell" width="100%"
+                                height="170%" />
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="flex-grow-1 p-4" style="overflow-y: auto; max-height: 400px;"> <!-- Added scrolling -->
-                 <Table2 DataKey="@selectedKey" @key="@($"{selectedKey}_Table2")" RowClicked="OnRowClicked"/>
-            </div>
-        </div>
-    </div>
-    <div class="col-6">
-        <div id="card-9" class="card h-100 d-flex flex-column">
-            <div class="card-headerR text-center p-2 m-0">
-                 @if (selectedKey == "Overall")
-                 {
-                    <div class="header-text">Smart Torque Cycle Count</div>
-                 }
-                 else
-                 {
-                    <div class="header-text">@selectedKey Smart Torque Cycle Count</div>
-                 }
-            </div>
-            <div class="flex-grow-1 p-4">
-                <Line @key="@ChildSelectedWorkcell" SelectedWorkcell="@ChildSelectedWorkcell" width="100%" height="170%"/>
-            </div>
-        </div>
-    </div>
-</div>
 
         </div>
     </div>
@@ -224,7 +238,8 @@
 {
     <div class="sticky-lg-bottom">
         <div class="scrolling-text">
-             Welcome to Smart Torque One-Center! Workcell details for Advantest DF, Fortive, Cohu, Gas Box, Lam Mec, and Micron SIG are in progress. Contact SME: Chanop/Syed. Thank you!!!
+            Welcome to Smart Torque One-Center! Workcell details for Advantest DF, Fortive, Cohu, Gas Box, Lam Mec, and
+            Micron SIG are in progress. Contact SME: Chanop/Syed. Thank you!!!
         </div>
     </div>
 }
@@ -233,10 +248,11 @@
     private bool showWorkcell = true;
     private bool showNotification = false;
 
-    private string selectedKey = "Overall"; // Default dataset
-    private List<string> ButtonLabels = new() { "Overall", "Onto", "Beckman Coulter","Becton Dickinson","Advantest DF", "Fortive", "Cohu","Gas Box", "Lam Mec", "Micron SIG" };
-    private List<string> ButtonBrand = new() { "Overall","Hantas","Desoutter","Sehan" };
-    private List<string> ButtonRange = new() { "Overall" };
+
+    private string selectedKey = "Brand"; // Default dataset
+    private List<string> ButtonLabels = new() { "Overall", "Onto", "Beckman Coulter","Becton Dickinson","Advantest DF",
+"Fortive", "Cohu","Gas Box", "Lam Mec", "Micron SIG" };
+    private List<string> ButtonBrand = new() { "Hantas", "Desoutter", "Sehan" };
 
     private string? ChildSelectedWorkcell = null;
 
@@ -248,20 +264,22 @@
     private void UpdateDataKey(string key)
     {
         ChildSelectedWorkcell = "";
+        NavManager.NavigateTo($"/?selectedKey={key}");
         selectedKey = key; // Update the dataset key
+    }
+     public void RangeNav(){
+        NavManager.NavigateTo("/range");
     }
     private void UpdateDataNavKey(string key)
     {
-         if(key == "Overall"){
+        if (key == "Overall")
+        {
             key = "Brand";
         }
         ChildSelectedWorkcell = "";
-        NavManager.NavigateTo($"/newpage?selectedKey={key}");
         selectedKey = key; // Update the dataset key
     }
-    public void RangeNav(){
-        NavManager.NavigateTo("/range");
-    }
+
     private void ShowWorkcell()
     {
         showWorkcell = true;
@@ -288,8 +306,7 @@
         // Set initial parameter values
         UpdateSelectedKeyFromUri();
     }
-
-    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+     private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
     {
         UpdateSelectedKeyFromUri();
     }
@@ -327,89 +344,46 @@
 
 
     private string GetContent(int cardNumber)
-{
-    return selectedKey switch
     {
-        "Overall" => cardNumber switch
+        return selectedKey switch
         {
-            1 => "251",
-            2 => "245",
-            3 => "6",
+            "Brand" => cardNumber switch
+            {
+                1 => "251",
+                2 => "245",
+                3 => "6",
+                _ => "Default Content"
+            },
+            "Sehan" => cardNumber switch
+            {
+                1 => "11",
+                2 => "11",
+                3 => "0",
+                _ => "Default Content"
+            },
+            "Hantas" => cardNumber switch
+            {
+                1 => "213",
+                2 => "213",
+                3 => "0",
+                _ => "Default Content"
+            },
+            "Desoutter" => cardNumber switch
+            {
+                1 => "27",
+                2 => "27",
+                3 => "0",
+                _ => "Default Content"
+            },
+            
             _ => "Default Content"
-        },
-        "Advantest DF" => cardNumber switch
-        {
-            1 => "15",
-            2 => "15",
-            3 => "0",
-            _ => "Default Content"
-        },
-        "Fortive" => cardNumber switch
-        {
-            1 => "9",
-            2 => "9",
-            3 => "0",
-            _ => "Default Content"
-        },
-        "Gas Box" => cardNumber switch
-        {
-            1 => "8",
-            2 => "8",
-            3 => "0",
-            _ => "Default Content"
-        },
-        "Lam Mec" => cardNumber switch
-        {
-            1 => "163",
-            2 => "163",
-            3 => "0",
-            _ => "Default Content"
-        },
-        "Beckman Coulter" => cardNumber switch
-        {
-            1 => "2",
-            2 => "2",
-            3 => "0",
-            _ => "Default Content"
-        },
-        "Micron SIG" => cardNumber switch
-        {
-            1 => "35",
-            2 => "35",
-            3 => "0",
-            _ => "Default Content"
-        },
-        "Becton Dickinson" => cardNumber switch
-        {
-            1 => "5",
-            2 => "5",
-            3 => "0",
-            _ => "Default Content"
-        },
-        "Onto" => cardNumber switch
-        {
-            1 => "6",
-            2 => "0",
-            3 => "6",
-            _ => "Default Content"
-        },
-        "Cohu" => cardNumber switch
-        {
-            1 => "8",
-            2 => "8",
-            3 => "0",
-            _ => "Default Content"
-        },
-        _ => "Default Content"
-    };
-}
+        };
+    }
 
 }
 
 
 <style>
-
-   
     .header-text {
         font-size: 1.5rem;
         font-weight: bold;
@@ -435,24 +409,24 @@
     }
 
     .card-headerA {
-        background-color: rgb(1, 100, 161);
+        background-color: rgb(53, 128, 240);
         border-bottom: solid 1px black;
-        
-        
+
+
     }
 
     .card-headerB {
-        background-color: rgb(0, 143, 81);
+        background-color: rgb(26, 175, 0);
         border-bottom: solid 1px black;
     }
 
     .card-headerC {
-        background-color: rgb(220, 88, 42);
+        background-color: rgb(252, 104, 78);
         border-bottom: solid 1px black;
     }
 
     .card-headerR {
-        background-color: rgb( 0, 82, 136);
+        background-color: rgb(0, 20, 118);
         border-bottom: solid 1px black;
         font-size: 1.5rem;
         font-weight: bold;
@@ -464,8 +438,8 @@
     }
 
     .sticky-lg-bottom {
-       
-       
+
+
         position: absolute;
         bottom: 0;
         left: 0;

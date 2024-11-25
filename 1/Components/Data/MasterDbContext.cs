@@ -4,8 +4,7 @@ using Microsoft.EntityFrameworkCore;
 public class MasterDbContext : DbContext
 {
 
-    public DbSet <MasterData> MasterData {get; set;}
-    public DbSet <LogData> LogData {get; set;}
+    public DbSet <MasterInventory> MasterInventory {get; set;}
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -15,26 +14,34 @@ public class MasterDbContext : DbContext
     }
 }
 
-public class MasterData
+public class MasterInventory
 {
-
-    public int? Id { get; set; }
-    public DateTime? Date { get; set; }
-    public int? Quantity { get; set; }
+    public int Id { get; set; }
+    public string? Asset { get; set; }
+    public string Description { get; set; } = string.Empty;
+    public string? TorqueSerialNumber { get; set; }
+    public string? TorqueModel { get; set; }
+    public string? TorqueRange { get; set; }
+    public string? ControllerSerialNumber { get; set; }
     public string? Brand { get; set; }
-    public string? ItemDescription { get; set; }
-    public string? Model { get; set; }
-    public string? DriverSerialNo { get; set; }
-    public string? Specification { get; set; }
-    public string? ControllerSerialNo { get; set; }
+    public string? Manufacturer { get; set; }
     public string? Supplier { get; set; }
-    public string? JabilIDNo { get; set; }
-    public string? NREorJabilOwn { get; set; }
+    public string? EquipmentID { get; set; }
+    public string? RegisterSAPEAM { get; set; }
+    public string? FunctionalGroup { get; set; }
+    public string? AssemblyGroup { get; set; }
+    public string? Sector { get; set; }
     public string? Plant { get; set; }
-    public string? IEME { get; set; }
     public string? Workcell { get; set; }
-    public string? PIC { get; set; }
+    public string? CostCenter { get; set; }
+    public string? NetBookValue { get; set; }
+    public string? UserStatus { get; set; }
+    public DateTime? KeyInDate { get; set; }
+    public string? Owner { get; set; }
+    public string? Comment { get; set; }
+
 }
+
 
 public class LogData
 {

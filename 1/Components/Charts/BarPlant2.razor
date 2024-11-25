@@ -1,0 +1,206 @@
+@page "/Bar"
+@rendermode InteractiveServer
+
+<ApexChart TItem="MyData"  Width="@Width" Height="@Height" Options=options>
+    @if (DataKey == "Brand")
+    {
+        <ApexPointSeries TItem="MyData" Items="Data" Name="Sehan" SeriesType="SeriesType.Bar" XValue="e => e.Category"
+            YValue="e => e.Sehan" PointColor="@(_ => GetPointColor("Sehan"))" ShowDataLabels />
+        <ApexPointSeries TItem="MyData" Items="Data" Name="Hantas" SeriesType="SeriesType.Bar" XValue="e => e.Category"
+            YValue="e => e.Hantas" PointColor="@(_ => GetPointColor("Hantas"))" ShowDataLabels />
+        <ApexPointSeries TItem="MyData" Items="Data" Name="Desoutter" SeriesType="SeriesType.Bar" XValue="e => e.Category"
+            YValue="e => e.Desoutter" PointColor="@(_ => GetPointColor("Desoutter"))" ShowDataLabels />
+
+
+    }
+    else
+    {
+        <ApexPointSeries TItem="MyData" Items="Data" Name="Value" SeriesType="SeriesType.Bar" XValue="e => e.Category"
+            YValue="e => e.Value" PointColor="e=> GetColor(e)" ShowDataLabels />
+    }
+</ApexChart>
+
+@code {
+    [Parameter] public string DataKey { get; set; } = "DEFAULT"; // Parameter for dataset selection
+    private List<MyData> Data { get; set; } = new();
+    private ApexChartOptions<MyData> options { get; set; } = new();
+    [Parameter] public string Height { get; set; } = "220";
+    [Parameter] public string Width { get; set; } = "500";
+
+
+    private readonly Dictionary<string, List<MyData>> DataSets = new()
+{
+{ "Brand", new List<MyData>
+{
+new MyData { Category = "Plant 1", Sehan = 11, Hantas = 42, Desoutter = 27 },
+new MyData { Category = "Batu Kawan", Sehan = 0, Hantas = 171, Desoutter = 0 },
+}
+},
+{ "Fortive", new List<MyData>
+{
+new MyData { Category = "Plant 1", Value = 9 }
+}
+},
+{ "Becton Dickinson", new List<MyData>
+{
+new MyData { Category = "Plant 1", Value = 5 }
+}
+},
+{ "Cohu", new List<MyData>
+{
+new MyData { Category = "Plant 1", Value = 8 }
+}
+},
+{ "Gas Box", new List<MyData>
+{
+new MyData { Category = "Plant 1", Value = 8 }
+}
+},
+{ "Lam Mec", new List<MyData>
+{
+new MyData { Category = "Plant 1", Value = 163 }
+}
+},
+{ "Beckman Coulter", new List<MyData>
+{
+new MyData { Category = "Plant 1", Value = 2 }
+}
+},
+{ "Micron SIG", new List<MyData>
+{
+new MyData { Category = "Plant 1", Value = 35 }
+}
+},
+{ "Onto", new List<MyData>
+{
+new MyData { Category = "Plant 1", Value = 6 }
+}
+},
+{ "Advantest DF", new List<MyData>
+{
+new MyData { Category = "Plant 1", Value = 15 }
+}
+},
+{ "Hantas", new List<MyData>
+{
+new MyData { Category = "Plant 1", Value = 42 },
+new MyData { Category = "Batu Kawan", Value = 171 }
+}
+},
+{ "Sehan", new List<MyData>
+{
+new MyData { Category = "Plant 1", Value = 11 },
+new MyData { Category = "Batu Kawan", Value = 0 }
+}
+},
+{ "Desoutter", new List<MyData>
+{
+new MyData { Category = "Plant 1", Value = 27 },
+new MyData { Category = "Batu Kawan", Value = 0 }
+}
+},
+};
+
+    protected override void OnParametersSet()
+    {
+        // Load appropriate dataset based on DataKey
+        Data = DataSets.ContainsKey(DataKey) ? DataSets[DataKey] : new List<MyData>();
+
+        ConfigureChartOptions();
+    }
+
+    private void ConfigureChartOptions()
+{
+    
+
+    options.DataLabels = new DataLabels
+    {
+        Enabled = true,
+        Style = new DataLabelsStyle
+        {
+            Colors = new List<string> { "#000000" }, // Set data label text color
+            FontSize = "40px", // Set font size
+            FontWeight = "bold" // Set font weight
+        },
+        OffsetY = 5, // Adjust vertical position of data labels
+        
+        Formatter = "function(value) { return value.toFixed(0); }" // Format labels to display whole numbers
+    };
+
+    options.Legend = new Legend
+    {
+        Position = LegendPosition.Bottom,
+        HorizontalAlign = ApexCharts.Align.Center,
+        FontSize = "20px",
+        FontWeight = "bold"
+    };
+
+    options.Fill = new Fill
+    {
+        Colors = new List<string> { "#47c0fc", "#17458f", "#bf0020" } // Colors for Sehan, Hantas, Desoutter
+    };
+
+    options.Yaxis = new List<YAxis>
+    {
+        new YAxis
+        {
+            Title = new AxisTitle { Text = "Value" },
+            Labels = new YAxisLabels
+            {
+                Style = new AxisLabelStyle { FontSize = "14px" }
+            }
+        }
+    };
+
+    options.Xaxis = new XAxis
+    {
+        Labels = new XAxisLabels
+        {
+            Style = new AxisLabelStyle { FontSize = "20px", FontWeight = "bold" }
+        }
+    };
+
+    @* options.PlotOptions = new PlotOptions
+    {
+        Bar = new PlotOptionsBar
+        {
+            DataLabels = new PlotOptionsBarDataLabels
+            {
+                Position = "top" // Ensure labels are displayed at the top of bars
+            }
+        }
+    }; *@
+}
+
+
+
+    public class MyData
+    {
+        // For Overall
+        public string Category { get; set; }
+        public int Sehan { get; set; }
+        public int Hantas { get; set; }
+        public int Desoutter { get; set; }
+
+        // For other datasets
+        public int Value { get; set; }
+    }
+
+    private string GetPointColor(string seriesName) => seriesName switch
+    {
+        "Sehan" => "#47c0fc",
+        "Desoutter" => "#bf0020",
+        "Hantas" => "#17458f",
+        _ => "#87775d"
+    };
+
+    private string GetColor(MyData order)
+    {
+        if (order.Category == "Plant 1")
+        {
+            return "#2206d4";
+        }
+        return null;
+    }
+
+}

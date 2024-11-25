@@ -1,0 +1,137 @@
+@page "/Bar"
+@rendermode InteractiveServer
+@inject NavigationManager NavManager
+
+<ApexChart TItem="MyData" Width="@Width" Height="@Height" Options=options OnDataPointSelection="HandleDataPointSelection">
+   
+        <ApexPointSeries TItem="MyData" Items="Data" Name="Registered" SeriesType="SeriesType.Bar" XValue="e => e.Category"
+            YValue="e => e.Registered" PointColor="@(_ => GetPointColor("Registered"))" ShowDataLabels />
+        <ApexPointSeries TItem="MyData" Items="Data" Name="Not Registered" SeriesType="SeriesType.Bar" XValue="e => e.Category"
+            YValue="e => e.NotRegistered" PointColor="@(_ => GetPointColor("NotRegistered"))" ShowDataLabels />
+ 
+</ApexChart>
+
+@code {
+    [Parameter] public string DataKey { get; set; } = "DEFAULT"; // Parameter for dataset selection
+    private List<MyData> Data { get; set; } = new();
+    private ApexChartOptions<MyData> options { get; set; } = new();
+    [Parameter] public string Height { get; set; } = "220";
+    [Parameter] public string Width { get; set; } = "500";
+
+
+    private readonly Dictionary<string, List<MyData>> DataSets = new()
+{
+{ "Brand", new List<MyData>
+{
+new MyData { Category = "Sehan", NotRegistered = 4, Registered = 7 },
+new MyData { Category = "Hantas", NotRegistered = 204, Registered = 9 },
+new MyData { Category = "Desoutter", NotRegistered = 15, Registered = 12 }, 
+}
+},
+
+};
+
+    protected override void OnParametersSet()
+    {
+        // Load appropriate dataset based on DataKey
+        Data = DataSets.ContainsKey(DataKey) ? DataSets[DataKey] : new List<MyData>();
+
+        ConfigureChartOptions();
+    }
+
+    private void ConfigureChartOptions()
+    {
+       
+
+        options.DataLabels = new DataLabels
+            {
+                Enabled = true,
+                Style = new DataLabelsStyle
+                {
+                    Colors = new List<string> { "#000000" }, // Data label color
+                    FontSize = "25px"
+                }
+            };
+
+        options.Legend = new Legend
+            {
+                Position = LegendPosition.Bottom,
+                HorizontalAlign = ApexCharts.Align.Center,
+                FontSize = "20px",
+                FontWeight = "bolder"
+            };
+        options.Fill = new Fill
+            {
+                Colors = new List<string> { "#3ab505", "#eb4034", "#bf0020" } // Colors for Sehan, Hantas, Desoutter
+            };
+
+
+        options.Yaxis = new List<YAxis>
+{
+new YAxis
+{
+Title = new AxisTitle { Text = "Value" },
+Labels = new YAxisLabels
+{
+Style = new AxisLabelStyle { FontSize = "20px" }
+}
+}
+};
+
+        options.Xaxis = new XAxis
+            {
+                Labels = new XAxisLabels
+                {
+                    Style = new AxisLabelStyle { FontSize = "20px", FontWeight = "bolder" }
+                }
+            };
+    }
+
+    public class MyData
+    {
+        // For Overall
+        public string Category { get; set; }
+        public int Sehan { get; set; }
+        public int Hantas { get; set; }
+        public int Desoutter { get; set; }
+        public int Registered { get; set; }
+        public int NotRegistered { get; set; }
+
+        // For other datasets
+        public int Value { get; set; }
+    }
+
+    private string GetPointColor(string seriesName) => seriesName switch
+    {
+        "NotRegistered" => "#eb4034",
+        "Registered" => "#3ab505",
+        "Hantas" => "#17458f",
+        _ => "#87775d"
+    };
+
+    private string GetColor(MyData order)
+    {
+        if (order.Category == "Plant 1")
+        {
+            return "#2206d4";
+        }
+        return null;
+    }
+
+
+   private void HandleDataPointSelection(SelectedData<MyData> selectedData)
+{
+    // Get the selected X-axis label (Category)
+    var selectedCategory = selectedData.DataPoint.X;
+
+    // Determine the clicked series by checking the name of the series
+    string clickedSeries = selectedData.Series.Name;
+
+    // Log the clicked category and series name
+    Console.WriteLine($"You clicked {selectedCategory} in series {clickedSeries}");
+
+    NavManager.NavigateTo($"/SAP?selectedKey={selectedCategory}");
+}
+
+
+}

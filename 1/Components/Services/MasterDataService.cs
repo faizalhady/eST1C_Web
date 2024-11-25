@@ -11,8 +11,8 @@ public class MasterDataService
         _context = context;
     }
 
-    public async Task<List<MasterData>> GetAllMasterDataAsync()
+    public async Task<List<MasterInventory>> GetAllMasterDataAsync()
     {
-        return await _context.MasterData.ToListAsync();
+        return await _context.MasterInventory.ToListAsync();
     }
 }

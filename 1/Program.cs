@@ -7,7 +7,6 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
     builder.Services.AddDbContext<MasterDbContext>();
 builder.Services.AddScoped<MasterDataService>();
-builder.Services.AddScoped<PieDataService>();
 
 
 var app = builder.Build();

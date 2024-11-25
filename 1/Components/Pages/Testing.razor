@@ -1,0 +1,52 @@
+@page "/test"
+@using _1.Components.Layout
+@using _1.Components.Charts
+@inject NavigationManager NavManager
+@inherits LayoutComponentBase
+@rendermode InteractiveServer
+
+<div class="container-fluid">
+    
+        <div class="row g-2" > <!-- Adjusted height -->
+    <div class="col-6">
+        <div id="card-8" class="card h-100 d-flex flex-column">
+            <div class="card-headerR text-center p-2 m-0">
+                <div class="header-text">@selectedKey Smart Torque Details</div>
+            </div>
+            <div class="flex-grow-1 p-4" style="overflow-y: auto; max-height: 400px;"> <!-- Added scrolling -->
+                 <Table2 DataKey="@selectedKey" @key="@($"{selectedKey}_Table2")" RowClicked="OnRowClicked"/>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div id="card-9" class="card h-100 d-flex flex-column">
+            <div class="card-headerR text-center p-2 m-0">
+                 @if (selectedKey == "Overall")
+                 {
+                    <div class="header-text">Smart Torque Cycle Count</div>
+                 }
+                 else
+                 {
+                    <div class="header-text">@selectedKey Smart Torque Cycle Count</div>
+                 }
+            </div>
+            <div class="flex-grow-1 p-4">
+                <Line @key="@ChildSelectedWorkcell" SelectedWorkcell="@ChildSelectedWorkcell" width="100%" height="170%"/>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+
+
+@code {
+
+    private string selectedKey = "Overall"; // Default dataset
+    private string? ChildSelectedWorkcell = null;
+
+    private void OnRowClicked(string workcellName)
+    {
+        ChildSelectedWorkcell = workcellName; // Update child dynamically
+        Console.WriteLine($"Row clicked: {workcellName}");
+    }
+}

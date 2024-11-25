@@ -1,0 +1,74 @@
+@page "/rangeTable"
+@inject MasterDataService MasterDataService
+@using BlazorBootstrap
+
+@if (masterInventoryList == null)
+{
+    <p>Loading...</p>
+}
+else if (!masterInventoryList.Any())
+{
+    <p>No data available.</p>
+}
+else
+{
+    <div class="container-fluid">
+        <Grid TItem="MasterInventory"
+              Class="table table-hover table-bordered text-wrap table-sm"
+              DataProvider="MasterDataProvider"
+              AllowPaging="true"
+              AllowSorting="true"
+              AllowFiltering="true"
+              Responsive="true"
+              PageSize="22">
+            <GridColumns>
+                <GridColumn TItem="MasterInventory" HeaderText="Id" PropertyName="Id" Style="width: 10px;" FilterTextboxWidth="80" SortKeySelector="item => item.Id">
+                    @context.Id
+                </GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Brand" PropertyName="Brand" SortKeySelector="item => item.Brand">
+                    @context.Brand
+                </GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Torque Model" PropertyName="TorqueModel" SortKeySelector="item => item.TorqueModel">
+                    @context.TorqueModel
+                </GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Torque Range" PropertyName="TorqueRange" SortKeySelector="item => item.TorqueRange">
+                    @context.TorqueRange
+                </GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Torque Serial No." PropertyName="TorqueSerialNumber" SortKeySelector="item => item.TorqueSerialNumber">
+                    @context.TorqueSerialNumber
+                </GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Workcell" PropertyName="Workcell" SortKeySelector="item => item.Workcell">
+                    @context.Workcell
+                </GridColumn>
+            </GridColumns>
+        </Grid>
+    </div>
+}
+
+@code {
+    private IEnumerable<MasterInventory>? masterInventoryList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Console.WriteLine("Fetching data...");
+            masterInventoryList = await MasterDataService.GetAllMasterDataAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching data: {ex.Message}");
+        }
+    }
+
+    private async Task<GridDataProviderResult<MasterInventory>> MasterDataProvider(GridDataProviderRequest<MasterInventory> request)
+    {
+        if (masterInventoryList == null)
+        {
+            masterInventoryList = await MasterDataService.GetAllMasterDataAsync();
+        }
+
+        // Automatically apply filtering, sorting, and paging
+        return await Task.FromResult(request.ApplyTo(masterInventoryList));
+    }
+}

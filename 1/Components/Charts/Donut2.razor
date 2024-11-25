@@ -1,0 +1,94 @@
+@page "/donut2"
+@inject NavigationManager NavManager
+
+<ApexChart TItem="MyData" Title="" Options=options Width="@Width" Height="@Height" OnDataPointSelection="HandleDataPointSelection">
+    <ApexPointSeries TItem="MyData"
+                     Items="Data"
+                     Name="Total"
+                     SeriesType="SeriesType.Donut"
+                     XValue="@(e => e.Category)"
+                     YAggregate="@(e => e.Sum(e => e.Value))"
+                     OrderByDescending="e => e.Y"
+                     PointColor="e => GetPointColor(e)"
+                     ShowDataLabels />
+</ApexChart>
+
+@code {
+    [Parameter] public string DataKey { get; set; } = "OVERVIEW"; // Parameter for dataset selection
+    [Parameter] public string Height { get; set; } = "220";
+    [Parameter] public string Width { get; set; } = "500";
+
+    private List<MyData> Data { get; set; } = new();
+    private ApexChartOptions<MyData> options { get; set; } = new();
+
+    private readonly Dictionary<string, List<MyData>> dataSets = new()
+    {
+        { "Overall", new List<MyData> { new MyData { Category = "Registered", Value = 28 },  new MyData { Category = "Not Registered", Value = 223 } }},
+        { "Onto", new List<MyData> { new MyData { Category = "Registered", Value = 3 },  new MyData { Category = "Not Registered", Value = 3} }},
+        { "Advantest DF", new List<MyData> { new MyData { Category = "Registered", Value = 0 },  new MyData { Category = "Not Registered", Value = 15 } }},
+        { "Fortive", new List<MyData> { new MyData { Category = "Registered", Value = 1 },   new MyData { Category = "Not Registered", Value = 8 } }},
+        { "Becton Dickinson", new List<MyData> { new MyData { Category = "Registered", Value = 0 },  new MyData { Category = "Not Registered", Value = 5 } }},
+        { "Cohu", new List<MyData> { new MyData { Category = "Registered", Value = 7 },  new MyData { Category = "Not Registered", Value = 1} }},
+        { "Gas Box", new List<MyData> { new MyData { Category = "Registered", Value = 0 },  new MyData { Category = "Not Registered", Value = 8 } }},
+        { "Lam Mec", new List<MyData> { new MyData { Category = "Registered", Value = 0 },  new MyData { Category = "Not Registered", Value = 163 } }},
+        { "Micron SIG", new List<MyData> { new MyData { Category = "Registered", Value = 17 },  new MyData { Category = "Not Registered", Value = 18 } }},
+        { "Beckman Coulter", new List<MyData> { new MyData { Category = "Registered", Value = 0 },  new MyData { Category = "Not Registered", Value = 2 } }},
+            @* //////////////////////////////////// *@
+        { "Sehan", new List<MyData> { new MyData { Category = "Registered", Value = 7 },  new MyData { Category = "Not Registered", Value = 4 } }},
+        { "Hantas", new List<MyData> { new MyData { Category = "Registered", Value = 9 },  new MyData { Category = "Not Registered", Value = 204 } }},
+        { "Desoutter", new List<MyData> { new MyData { Category = "Registered", Value = 12 },  new MyData { Category = "Not Registered", Value = 15 } }},
+    };
+
+    protected override void OnParametersSet()
+    {
+        // Update data based on DataKey
+        Data = dataSets.ContainsKey(DataKey) ? dataSets[DataKey] : new List<MyData>();
+
+        // Chart options setup
+        options.Legend = new Legend
+        {
+            Position = LegendPosition.Bottom,
+            FontSize = "20px",
+            HorizontalAlign = ApexCharts.Align.Center,
+            FontWeight = "bolder"
+        };
+        
+
+        options.DataLabels = new DataLabels
+        {
+            Formatter = @"function(value, { seriesIndex, w }) {
+                return w.config.series[seriesIndex];
+            }",
+
+              Style = new DataLabelsStyle
+            {
+                Colors = new List<string> { "#000000" },
+                FontSize = "40px",
+            },
+        };
+    }
+
+    private string GetPointColor(MyData item) => item.Category switch
+    {
+        "Registered" => "#3ab505",
+        "In Progress" => "#ffd500",
+        "Not Registered" => "#eb4034",
+        _ => "#87775d"
+    };
+
+    public class MyData
+    {
+        public string Category { get; set; }
+        public int Value { get; set; }
+    }
+
+      private void HandleDataPointSelection(SelectedData<MyData> selectedData)
+    {
+        // Get the selected category
+        var selectedCategory = selectedData.DataPoint.X;
+
+        NavManager.NavigateTo($"/SAP?selectedKey={DataKey}");
+        
+        Console.WriteLine($"You clicked {selectedCategory} "); 
+    }
+}
