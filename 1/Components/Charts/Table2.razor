@@ -1,7 +1,7 @@
 @using System.Collections.Generic
 @using Microsoft.AspNetCore.Components
 
-<table class="table table-hover table-bordered text-wrap table-sm">
+<table class="table table-hover table-bordered text-wrap table-sm custom-table">
     <thead >
         <tr>
             <th>No</th>
@@ -108,3 +108,21 @@
         public string Wc { get; set; } = string.Empty; // Ensures each row has a WorkcellName
     }
 }
+
+
+<style>
+    /* Specific table header size reduction */
+.custom-table th {
+    font-size: 0.8rem; /* Adjust font size */
+    padding: 4px 8px; /* Adjust padding for a more compact design */
+    line-height: 1.2; /* Optional: Adjust line height */
+    text-align: center; /* Optional: Align text */
+}
+
+/* Optional: Add reduced padding for the table cells */
+.custom-table td {
+    font-size: 0.9rem; /* Slightly larger than header for readability */
+    padding: 6px 10px; /* Adjust padding */
+}
+
+</style>

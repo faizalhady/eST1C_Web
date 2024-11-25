@@ -4,24 +4,20 @@
 @inherits LayoutComponentBase
 @inject NavigationManager NavManager
 @rendermode InteractiveServer
-<PageTitle>Torque Range</PageTitle>
 
+<PageTitle>Workcell</PageTitle>
 
 <div class="container-fluid vh-100 d-flex flex-column overflow-hidden" style="height: 100%;">
     <!-- Main Content -->
     <div class="mb-0" style="height: 3%;">
         <NavBar />
     </div>
-    <div class="row flex-1 h-100 p-5" style="height: 95%;">
+    <div class="row flex-1 h-100 pt-3" style="height: 95%;">
         <!-- Side Section -->
-        <div class="col-1 d-flex flex-column p-0" style="height: 100%;">
-            @* <div id="side-card-1" class="card mb-2 flex-fill" style="height: 20%; width: 180px;">
-                <div class="card-body">
-                    <!-- Side Card 1 Content -->
-                </div>
-            </div> *@
-            <div id="side-card-2" class="card mb-3" style="height: 550px; width: 180px;">
-                <div class="card-headerR text-center p-2">
+        <div class="col-1 d-flex flex-column p-0" style="height: 100%; width: auto;">
+            
+            <div id="side-card-2" class="card mb-3" style="height: auto;">
+                <div class="card-headerR text-center p-0">
                     <div class="header-text">Workcell</div>
                 </div>
                 <div class="card-body d-flex flex-column align-items-center gap-1 p-1 overflow-auto side-nav">
@@ -29,7 +25,8 @@
                     <div class="d-grid gap-1">
                         @foreach (var buttonLabel in ButtonLabels)
                         {
-                            <button class="btn btn-outline-primary" @onclick="() => UpdateDataKey(buttonLabel)">
+                            <button class="btn  btn-outline-primary" 
+                                @onclick="() => UpdateDataKey(buttonLabel)">
                                 @buttonLabel
                             </button>
                         }
@@ -37,16 +34,17 @@
 
                 </div>
             </div>
-            <div id="side-card-2" class="card mb-3" style="height: 300px; width: 180px;">
-                <div class="card-headerR text-center p-2">
+            <div id="side-card-2" class="card mb-3" style="height: auto; ">
+                <div class="card-headerR text-center p-0">
                     <div class="header-text">Brand</div>
                 </div>
                 <div class="card-body d-flex flex-column align-items-center gap-1 p-1 overflow-auto side-nav">
                     <!-- Buttons -->
-                    <div class="d-grid gap-1">
+                    <div class="d-grid gap-1 responsive-button-container">
                         @foreach (var buttonLabel in ButtonBrand)
                         {
-                            <button class="btn btn-outline-primary" @onclick="() => UpdateDataNavKey(buttonLabel)">
+                            <button class="btn btn-outline-primary" 
+                                @onclick="() => UpdateDataNavKey(buttonLabel)">
                                 @buttonLabel
                             </button>
                         }
@@ -54,18 +52,19 @@
 
                 </div>
             </div>
-            <div id="side-card-2" class="card" style="height: 200px; width: 180px;">
-                <div class="card-headerR text-center p-2">
+            <div id="side-card-2" class="card" style="height: auto;">
+                <div class="card-headerR text-center p-0">
                     <div class="header-text">Torque Range</div>
                 </div>
                 <div class="card-body d-flex flex-column align-items-center gap-1 p-1 overflow-auto side-nav">
                     <!-- Buttons -->
-                    <div class="d-grid gap-1">
-
-                        <button class="btn btn-primary" @onclick="() => RangeNav()">
-                            Overall
-                        </button>
-
+                    <div class="d-grid gap-1 responsive-button-container">
+                       
+                            <button class="btn btn-primary"
+                                @onclick="() => RangeNav()">
+                                Overall
+                            </button>
+                        
                     </div>
 
                 </div>
@@ -73,47 +72,38 @@
         </div>
 
         <!-- Main Content -->
-        <div class="col d-flex flex-column" style="height: 100%; overflow-y: auto; ">
-        
-
-            <div class="row g-2" style="flex: 0 0 12%;">
+        <div class="col d-flex flex-column" style="height: 100%;">
+            <!-- First Row -->
+            <div class="row g-2 mb-2" style="flex: 0 0 10%;"> <!-- Reduced height to 12% -->
                 <div class="col-12">
-                    <div id="card-1" class="card p-0" style="height: 100%;">
-                        <div class="card-headerA text-center p-2 m-0">
-                            <div class="header-text">@selectedKey Inventory Data</div>
+                    <div id="card-1" class="card h-100 p-0">
+                        <div class="card-headerA text-center p-0 m-0">
+                            <div class="header-text">@selectedKey Smart Torque</div>
                         </div>
-                        <div class="card-body p-3 m-0" style="overflow-y: auto; height: 100%;">
+                        <div class="card-body d-flex align-items-center justify-content-center p-0 m-0">
                             <RangeTable />
                         </div>
-
                     </div>
                 </div>
-            </div>
+                
 
+            <!-- Second Row -->
+           
 
         </div>
     </div>
 </div>
+</div>
 
 
-@if (showNotification)
-{
-    <div class="sticky-lg-bottom">
-        <div class="scrolling-text">
-            Welcome to Smart Torque One-Center! Workcell details for Advantest DF, Fortive, Cohu, Gas Box, Lam Mec, and
-            Micron SIG are in progress. Contact SME: Chanop/Syed. Thank you!!!
-        </div>
-    </div>
-}
 
 @code {
-    private bool showWorkcell = false;
+    private bool showWorkcell = true;
     private bool showNotification = false;
 
-    private string selectedKey = ""; // Default dataset
-    private List<string> ButtonLabels = new() { "Overall", "Onto", "Beckman Coulter","Becton Dickinson","Advantest DF",
-"Fortive", "Cohu","Gas Box", "Lam Mec", "Micron SIG" };
-    private List<string> ButtonBrand = new() { "Overall", "Hantas", "Desoutter", "Sehan" };
+    private string selectedKey = "Overall"; // Default dataset
+    private List<string> ButtonLabels = new() { "Overall", "Onto", "Beckman Coulter","Becton Dickinson","Advantest DF", "Fortive", "Cohu","Gas Box", "Lam Mec", "Micron SIG" };
+    private List<string> ButtonBrand = new() { "Overall","Hantas","Desoutter","Sehan" };
     private List<string> ButtonRange = new() { "Overall" };
 
     private string? ChildSelectedWorkcell = null;
@@ -128,21 +118,18 @@
         ChildSelectedWorkcell = "";
         NavManager.NavigateTo($"/?selectedKey={key}");
         selectedKey = key; // Update the dataset key
-
     }
     private void UpdateDataNavKey(string key)
     {
-        if (key == "Overall")
-        {
+         if(key == "Overall"){
             key = "Brand";
         }
         ChildSelectedWorkcell = "";
         NavManager.NavigateTo($"/newpage?selectedKey={key}");
         selectedKey = key; // Update the dataset key
     }
-    public void RangeNav()
-    {
-        
+    public void RangeNav(){
+        NavManager.NavigateTo("/range");
     }
     private void ShowWorkcell()
     {
@@ -164,6 +151,32 @@
 
         // Get the selectedKey parameter, defaulting to "Overall" if it's not provided
         selectedKey = query["selectedKey"] ?? "Overall";
+
+         NavManager.LocationChanged += OnLocationChanged;
+        
+        // Set initial parameter values
+        UpdateSelectedKeyFromUri();
+    }
+
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        UpdateSelectedKeyFromUri();
+    }
+
+    private void UpdateSelectedKeyFromUri()
+    {
+        // Parse query parameters
+        var uri = new Uri(NavManager.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+        // Update the selectedKey parameter, defaulting to "Overall" if not provided
+        var newSelectedKey = query["selectedKey"] ?? "Overall";
+
+        if (selectedKey != newSelectedKey)
+        {
+            selectedKey = newSelectedKey;
+            StateHasChanged(); // Force re-render
+        }
     }
 
     private async Task ToggleNotificationAsync()
@@ -183,96 +196,150 @@
 
 
     private string GetContent(int cardNumber)
+{
+    return selectedKey switch
     {
-        return selectedKey switch
+        "Overall" => cardNumber switch
         {
-            "Overall" => cardNumber switch
-            {
-                1 => "251",
-                2 => "245",
-                3 => "6",
-                _ => "Default Content"
-            },
-            "Advantest DF" => cardNumber switch
-            {
-                1 => "15",
-                2 => "15",
-                3 => "0",
-                _ => "Default Content"
-            },
-            "Fortive" => cardNumber switch
-            {
-                1 => "9",
-                2 => "9",
-                3 => "0",
-                _ => "Default Content"
-            },
-            "Gas Box" => cardNumber switch
-            {
-                1 => "8",
-                2 => "8",
-                3 => "0",
-                _ => "Default Content"
-            },
-            "Lam Mec" => cardNumber switch
-            {
-                1 => "163",
-                2 => "163",
-                3 => "0",
-                _ => "Default Content"
-            },
-            "Beckman Coulter" => cardNumber switch
-            {
-                1 => "2",
-                2 => "2",
-                3 => "0",
-                _ => "Default Content"
-            },
-            "Micron SIG" => cardNumber switch
-            {
-                1 => "35",
-                2 => "35",
-                3 => "0",
-                _ => "Default Content"
-            },
-            "Becton Dickinson" => cardNumber switch
-            {
-                1 => "5",
-                2 => "5",
-                3 => "0",
-                _ => "Default Content"
-            },
-            "Onto" => cardNumber switch
-            {
-                1 => "6",
-                2 => "0",
-                3 => "6",
-                _ => "Default Content"
-            },
-            "Cohu" => cardNumber switch
-            {
-                1 => "8",
-                2 => "8",
-                3 => "0",
-                _ => "Default Content"
-            },
+            1 => "251",
+            2 => "245",
+            3 => "6",
             _ => "Default Content"
-        };
-    }
+        },
+        "Advantest DF" => cardNumber switch
+        {
+            1 => "15",
+            2 => "15",
+            3 => "0",
+            _ => "Default Content"
+        },
+        "Fortive" => cardNumber switch
+        {
+            1 => "9",
+            2 => "9",
+            3 => "0",
+            _ => "Default Content"
+        },
+        "Gas Box" => cardNumber switch
+        {
+            1 => "8",
+            2 => "8",
+            3 => "0",
+            _ => "Default Content"
+        },
+        "Lam Mec" => cardNumber switch
+        {
+            1 => "163",
+            2 => "163",
+            3 => "0",
+            _ => "Default Content"
+        },
+        "Beckman Coulter" => cardNumber switch
+        {
+            1 => "2",
+            2 => "2",
+            3 => "0",
+            _ => "Default Content"
+        },
+        "Micron SIG" => cardNumber switch
+        {
+            1 => "35",
+            2 => "35",
+            3 => "0",
+            _ => "Default Content"
+        },
+        "Becton Dickinson" => cardNumber switch
+        {
+            1 => "5",
+            2 => "5",
+            3 => "0",
+            _ => "Default Content"
+        },
+        "Onto" => cardNumber switch
+        {
+            1 => "6",
+            2 => "0",
+            3 => "6",
+            _ => "Default Content"
+        },
+        "Cohu" => cardNumber switch
+        {
+            1 => "8",
+            2 => "8",
+            3 => "0",
+            _ => "Default Content"
+        },
+        _ => "Default Content"
+    };
+}
 
 }
 
 
 <style>
+/* Ensure the container spans the full width */
+.responsive-button-container {
+    width: 100%; /* Full width of the parent container */
+    display: grid; /* Grid layout for vertical stacking */
+    gap: 0.5rem; /* Adjust spacing between buttons */
+}
+
+/* Ensure buttons take the full width of the container */
+.responsive-button-container .btn {
+    width: 100%; /* Full width buttons */
+}
+
+    /* Add these styles to your existing CSS */
+.table-container {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Ensure the table header stays fixed */
+.table-fixed-header {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+}
+
+/* Modify the existing card styles */
+#card-8 {
+    max-height: 42vh; /* Adjust this value based on your needs */
+    
+}
+
+/* Style the table rows */
+.table-row {
+    font-size: 0.5rem;
+}
+
+/* Custom scrollbar styles for better appearance */
+.table-container::-webkit-scrollbar {
+    width: 2px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
     .header-text {
-        font-size: 1.5rem;
         font-weight: bold;
         color: white;
+        font-size: 0.8rem; /* Smaller font size */
     }
 
     .body-text {
-        font-size: 3rem;
-        /* Smaller font size for body */
+        font-size: 0.5rem; /* Slightly smaller font size for body text */
     }
 
     .card-header,
@@ -284,69 +351,53 @@
     .card-header {
         background-color: coral;
         border-bottom: solid 1px black;
-        font-size: 1.5rem;
         font-weight: bold;
+        font-size: 1rem; /* Smaller, consistent font size */
     }
 
     .card-headerA {
-        background-color: rgb(53, 128, 240);
+        background-color: rgb(1, 100, 161);
         border-bottom: solid 1px black;
-
-
+        font-size: 1rem; /* Smaller header font size */
     }
 
     .card-headerB {
-        background-color: rgb(26, 175, 0);
+        background-color: rgb(0, 143, 81);
         border-bottom: solid 1px black;
+        font-size: 1rem;
     }
 
     .card-headerC {
-        background-color: rgb(252, 104, 78);
+        background-color: rgb(220, 88, 42);
         border-bottom: solid 1px black;
+        font-size: 0.5rem;
     }
 
     .card-headerR {
-        background-color: rgb(0, 20, 118);
+        background-color: rgb(0, 82, 136);
         border-bottom: solid 1px black;
-        font-size: 1.5rem;
         font-weight: bold;
+        font-size: 0.8rem; /* Reduced header font size */
     }
 
     .side-nav {
-
         overflow: scroll;
     }
 
+    .btn {
+        font-size: 0.65rem; /* Smaller font size for buttons */
+        
+    }
+
     .sticky-lg-bottom {
-
-
         position: absolute;
         bottom: 0;
         left: 0;
-        /* Ensure it starts at the very left of the screen */
         width: 100vw;
-        /* Full viewport width */
         margin: 0;
-        /* Remove any default margins */
         padding: 0;
-        /* Remove any padding */
         z-index: 1000;
-        /* Ensure it stays on top */
+        font-size: 0.8rem; /* Smaller font size for the notification text */
     }
-
-    .btn {
-        min-width: 150px;
-    }
-
-    .table {
-    width: 100%;
-    height: auto;
-    table-layout: auto; /* Allows flexible column widths */
-}
-
-.card-body {
-    height: 100%;
-    overflow-y: auto;
-}
-
 </style>
+

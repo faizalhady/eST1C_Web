@@ -4,10 +4,10 @@
 @rendermode InteractiveServer
 
 <div>
-    <h3>Serial No: @EffectiveWorkcell</h3>
+    
 
     <ApexChart TItem="MyData"
-               Title=""
+               Title="@ChartTitle"
                Options="options"
                Width="@width" Height="@height">
         <ApexPointSeries TItem="MyData"
@@ -22,7 +22,10 @@
 
 @code {
     [Parameter] public string? SelectedWorkcell { get; set; }
-    private string EffectiveWorkcell => SelectedWorkcell ?? "18H37459";
+    private string EffectiveWorkcell => SelectedWorkcell ?? string.Empty;
+
+
+    private string ChartTitle => $"Serial No: {EffectiveWorkcell}";
 
     private List<MyData> ChartData = new();
 
@@ -166,84 +169,84 @@
         },
         { "20D78918", new List<MyData>
             {
-                new() { Workcell = "Jan", Total = 917 },
-                new() { Workcell = "Feb", Total = 3912 },
-                new() { Workcell = "Mar", Total = 3912 },
-                new() { Workcell = "Apr", Total = 1023 },
-                new() { Workcell = "May", Total = 1023 },
-                new() { Workcell = "Jun", Total = 1920 },
-                new() { Workcell = "Jul", Total = 7599 },
-                new() { Workcell = "Aug", Total = 3912 },
-                new() { Workcell = "Sep", Total = 2173 },
-                new() { Workcell = "Oct", Total = 1823 },
-                new() { Workcell = "Nov", Total = 1927 }
+                new() { Workcell = "Jan 2024", Total = 917 },
+                new() { Workcell = "Feb 2024", Total = 3912 },
+                new() { Workcell = "Mar 2024", Total = 3912 },
+                new() { Workcell = "Apr 2024", Total = 1023 },
+                new() { Workcell = "May 2024", Total = 1023 },
+                new() { Workcell = "Jun 2024", Total = 1920 },
+                new() { Workcell = "Jul 2024", Total = 7599 },
+                new() { Workcell = "Aug 2024", Total = 3912 },
+                new() { Workcell = "Sep 2024", Total = 2173 },
+                new() { Workcell = "Oct 2024", Total = 1823 },
+                new() { Workcell = "Nov 2024", Total = 1927 }
             }
 
         },
         { "20C85712", new List<MyData>
             {
-                new() { Workcell = "Jan", Total = 1823 },
-                new() { Workcell = "Feb", Total = 1729 },
-                new() { Workcell = "Mar", Total = 1273 },
-                new() { Workcell = "Apr", Total = 2913 },
-                new() { Workcell = "May", Total = 983 },
-                new() { Workcell = "Jun", Total = 9819 },
-                new() { Workcell = "Jul", Total = 1923 },
-                new() { Workcell = "Aug", Total = 1027 },
-                new() { Workcell = "Sep", Total = 1623 },
-                new() { Workcell = "Oct", Total = 918 },
-                new() { Workcell = "Nov", Total = 1020 }
+                new() { Workcell = "Jan 2024", Total = 1823 },
+                new() { Workcell = "Feb 2024", Total = 1729 },
+                new() { Workcell = "Mar 2024", Total = 1273 },
+                new() { Workcell = "Apr 2024", Total = 2913 },
+                new() { Workcell = "May 2024", Total = 983 },
+                new() { Workcell = "Jun 2024", Total = 9819 },
+                new() { Workcell = "Jul 2024", Total = 1923 },
+                new() { Workcell = "Aug 2024", Total = 1027 },
+                new() { Workcell = "Sep 2024", Total = 1623 },
+                new() { Workcell = "Oct 2024", Total = 918 },
+                new() { Workcell = "Nov 2024", Total = 1020 }
             }
 
 
         },
         { "2307010107", new List<MyData>
             {
-                new() { Workcell = "Jan", Total = 1927 },
-                new() { Workcell = "Feb", Total = 1934 },
-                new() { Workcell = "Mar", Total = 1927 },
-                new() { Workcell = "Apr", Total = 1618 },
-                new() { Workcell = "May", Total = 2103 },
-                new() { Workcell = "Jun", Total = 1462 },
-                new() { Workcell = "Jul", Total = 2183 },
-                new() { Workcell = "Aug", Total = 989 },
-                new() { Workcell = "Sep", Total = 1027 },
-                new() { Workcell = "Oct", Total = 3182 },
-                new() { Workcell = "Nov", Total = 1920 }
+                new() { Workcell = "Jan 2024", Total = 1927 },
+                new() { Workcell = "Feb 2024", Total = 1934 },
+                new() { Workcell = "Mar 2024", Total = 1927 },
+                new() { Workcell = "Apr 2024", Total = 1618 },
+                new() { Workcell = "May 2024", Total = 2103 },
+                new() { Workcell = "Jun 2024", Total = 1462 },
+                new() { Workcell = "Jul 2024", Total = 2183 },
+                new() { Workcell = "Aug 2024", Total = 989 },
+                new() { Workcell = "Sep 2024", Total = 1027 },
+                new() { Workcell = "Oct 2024", Total = 3182 },
+                new() { Workcell = "Nov 2024", Total = 1920 }
             }
 
 
         },
         { "2307010108", new List<MyData>
             {
-                new() { Workcell = "Jan", Total = 1841 },
-                new() { Workcell = "Feb", Total = 3012 },
-                new() { Workcell = "Mar", Total = 2934 },
-                new() { Workcell = "Apr", Total = 1728 },
-                new() { Workcell = "May", Total = 928 },
-                new() { Workcell = "Jun", Total = 3912 },
-                new() { Workcell = "Jul", Total = 1934 },
-                new() { Workcell = "Aug", Total = 1627 },
-                new() { Workcell = "Sep", Total = 1727 },
-                new() { Workcell = "Oct", Total = 3162 },
-                new() { Workcell = "Nov", Total = 2913 }
+                new() { Workcell = "Jan 2024", Total = 1841 },
+                new() { Workcell = "Feb 2024", Total = 3012 },
+                new() { Workcell = "Marv 2024", Total = 2934 },
+                new() { Workcell = "Apr 2024", Total = 1728 },
+                new() { Workcell = "May 2024", Total = 928 },
+                new() { Workcell = "Jun 2024", Total = 3912 },
+                new() { Workcell = "Jul 2024", Total = 1934 },
+                new() { Workcell = "Aug 2024", Total = 1627 },
+                new() { Workcell = "Sep 2024", Total = 1727 },
+                new() { Workcell = "Oct 2024", Total = 3162 },
+                new() { Workcell = "Nov 2024", Total = 2913 }
             }
 
 
         },
         { "2307010109", new List<MyData>
             {
-                new() { Workcell = "Jan", Total = 1921 },
-                new() { Workcell = "Feb", Total = 1829 },
-                new() { Workcell = "Mar", Total = 1728 },
-                new() { Workcell = "Apr", Total = 1021 },
-                new() { Workcell = "May", Total = 1723 },
-                new() { Workcell = "Jun", Total = 3201 },
-                new() { Workcell = "Jul", Total = 3941 },
-                new() { Workcell = "Aug", Total = 928 },
-                new() { Workcell = "Sep", Total = 1728 },
-                new() { Workcell = "Oct", Total = 3919 },
-                new() { Workcell = "Nov", Total = 2013 }
+                new() { Workcell = "Jan 2024", Total = 1921 },
+                new() { Workcell = "Feb 2024", Total = 1829 },
+                new() { Workcell = "Mar 2024", Total = 1728 },
+                new() { Workcell = "Apr 2024", Total = 1021 },
+                new() { Workcell = "May 2024", Total = 1723 },
+                new() { Workcell = "Jun 2024", Total = 3201 },
+                new() { Workcell = "Jul 2024", Total = 3941 },
+                new() { Workcell = "Aug 2024", Total = 928 },
+                new() { Workcell = "Sep 2024", Total = 1728 },
+                new() { Workcell = "Oct 2024", Total = 3919 },
+                new() { Workcell = "Nov 2024", Total = 2013 }
             }
 
 
@@ -262,6 +265,38 @@
 
     protected override void OnParametersSet()
     {
+
+         options.Yaxis = new List<YAxis>
+        {
+            new YAxis
+            {
+                Title = new AxisTitle { Text = "Cycle" },
+                DecimalsInFloat = 0,
+                TickAmount = 6,
+                Labels = new YAxisLabels
+                {
+                    Style = new AxisLabelStyle { FontSize = "10px" }
+                }
+            }
+        };
+
+         options.DataLabels = new DataLabels
+        {
+            
+            Style = new DataLabelsStyle
+            {
+                Colors = new List<string> { "#000000" },
+                FontSize = "8px",
+            },
+        };
+
+        options.Xaxis = new XAxis
+    {
+        Labels = new XAxisLabels
+        {
+            Style = new AxisLabelStyle { FontSize = "10.5px", FontWeight = "bold" }
+        }
+    };
         Console.WriteLine($"Line Component Updated: EffectiveWorkcell = {EffectiveWorkcell}");
 
         // Recalculate ChartData
