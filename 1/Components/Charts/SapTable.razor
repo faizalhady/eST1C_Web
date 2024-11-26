@@ -21,14 +21,13 @@ else
               AllowSorting="true"
               AllowFiltering="true"
               Responsive="true"
-              PageSize="15">
+              PageSize="15"
+              RowClass="@GetRowClass">
+              
             <GridColumns>
-                <GridColumn TItem="MasterInventory" HeaderText="Id" Style="width: 10px;" FilterTextboxWidth="80">
-        @{
-            var index = masterInventoryList?.ToList().IndexOf(context) + 1 ?? 0; // Calculate dynamic ID
-            <span>@index</span>
-        }
-    </GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="No." PropertyName="Id" SortKeySelector="item => item.Id" FilterTextboxWidth="80">
+                    @context.Id
+                </GridColumn>
                 <GridColumn TItem="MasterInventory" HeaderText="Workcell" PropertyName="Workcell" SortKeySelector="item => item.Workcell">
                     @context.Workcell
                 </GridColumn>
@@ -41,11 +40,14 @@ else
                 <GridColumn TItem="MasterInventory" HeaderText="Torque Serial No." PropertyName="TorqueSerialNumber" SortKeySelector="item => item.TorqueSerialNumber">
                     @context.TorqueSerialNumber
                 </GridColumn>
-                <GridColumn TItem="MasterInventory" HeaderText="Register SAP EAM" PropertyName="RegisterSAPEAM" SortKeySelector="item => item.RegisterSAPEAM">
+                <GridColumn TItem="MasterInventory" HeaderText="SAP EAM No." PropertyName="RegisterSAPEAM" SortKeySelector="item => item.RegisterSAPEAM">
                     @context.RegisterSAPEAM
                 </GridColumn>
-                <GridColumn TItem="MasterInventory" HeaderText="Registered" SortKeySelector="item => item.RegisterSAPEAM">
-                    @(string.IsNullOrWhiteSpace(context.RegisterSAPEAM) ? "Not Registered" : "Registered")
+                <GridColumn TItem="MasterInventory" HeaderText="Registration Status" PropertyName="RegistrationStatus" SortKeySelector="item => item.RegistrationStatus">
+                    @context.RegistrationStatus
+                </GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Usage Status" PropertyName="UserStatus" SortKeySelector="item => item.UserStatus">
+                    @context.UserStatus
                 </GridColumn>
             </GridColumns>
         </Grid>
@@ -53,12 +55,11 @@ else
 }
 
 @code {
-    private string? SelectedKey { get; set; } // The selected key (Workcell or Brand)
-    private IEnumerable<MasterInventory>? masterInventoryList;
+    private string? SelectedKey { get; set; }
+    private List<MasterInventory>? masterInventoryList;
 
     protected override async Task OnInitializedAsync()
     {
-        // Parse the query parameters to get the selectedKey
         var uri = new Uri(NavManager.Uri);
         var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
         SelectedKey = query["selectedKey"];
@@ -66,27 +67,31 @@ else
         try
         {
             Console.WriteLine($"Fetching data for filter: {SelectedKey}");
-            masterInventoryList = await MasterDataService.GetAllMasterDataAsync();
+            var data = await MasterDataService.GetAllMasterDataAsync();
 
-            // Apply filter logic
+            // Apply filter logic based on SelectedKey
             if (!string.IsNullOrEmpty(SelectedKey))
             {
                 if (SelectedKey == "Overall" || SelectedKey == "Brand")
                 {
-                    // Display the full list
                     Console.WriteLine("Displaying full list");
                 }
                 else if (SelectedKey == "Sehan" || SelectedKey == "Hantas" || SelectedKey == "Desoutter")
                 {
-                    // Filter by Brand
-                    masterInventoryList = masterInventoryList?.Where(item => item.Brand == SelectedKey);
+                    data = data.Where(item => item.Brand == SelectedKey).ToList();
                 }
                 else
                 {
-                    // Filter by Workcell
-                    masterInventoryList = masterInventoryList?.Where(item => item.Workcell == SelectedKey);
+                    data = data.Where(item => item.Workcell == SelectedKey).ToList();
                 }
             }
+
+            // Assign sequential IDs for sorting and filtering
+            masterInventoryList = data.Select((item, index) =>
+            {
+                item.Id = index + 1; // Ensure the Id property exists in the model
+                return item;
+            }).ToList();
         }
         catch (Exception ex)
         {
@@ -99,9 +104,22 @@ else
         if (masterInventoryList == null)
         {
             masterInventoryList = await MasterDataService.GetAllMasterDataAsync();
+
+            // Assign sequential IDs if data is reloaded
+            masterInventoryList = masterInventoryList.Select((item, index) =>
+            {
+                item.Id = index + 1;
+                return item;
+            }).ToList();
         }
 
-        // Apply filtering, sorting, and paging
         return await Task.FromResult(request.ApplyTo(masterInventoryList));
+    }
+
+    private string GetRowClass(MasterInventory emp)
+    {
+        return string.IsNullOrWhiteSpace(emp.RegisterSAPEAM) || emp.RegisterSAPEAM == "Not Registered"
+            ? "table-danger"
+            : "table-success";
     }
 }

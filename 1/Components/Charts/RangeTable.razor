@@ -20,9 +20,10 @@ else
               AllowSorting="true"
               AllowFiltering="true"
               Responsive="true"
-              PageSize="15">
+              PageSize="15"
+              RowClass="@GetRowClass">
             <GridColumns>
-                <GridColumn TItem="MasterInventory" HeaderText="Id" PropertyName="Id" Style="width: 10px;" FilterTextboxWidth="80" SortKeySelector="item => item.Id">
+                <GridColumn TItem="MasterInventory" HeaderText="No." PropertyName="Id" Style="width: 10px;" FilterTextboxWidth="80" SortKeySelector="item => item.Id">
                     @context.Id
                 </GridColumn>
                 <GridColumn TItem="MasterInventory" HeaderText="Brand" PropertyName="Brand" SortKeySelector="item => item.Brand">
@@ -40,8 +41,13 @@ else
                 <GridColumn TItem="MasterInventory" HeaderText="Workcell" PropertyName="Workcell" SortKeySelector="item => item.Workcell">
                     @context.Workcell
                 </GridColumn>
+                <GridColumn TItem="MasterInventory" HeaderText="Usage Status" PropertyName="UserStatus" SortKeySelector="item => item.UserStatus">
+                    @context.UserStatus
+                </GridColumn>
             </GridColumns>
         </Grid>
+
+         
     </div>
 }
 
@@ -70,5 +76,13 @@ else
 
         // Automatically apply filtering, sorting, and paging
         return await Task.FromResult(request.ApplyTo(masterInventoryList));
+    }
+
+
+     private string GetRowClass(MasterInventory emp)
+    {
+        return string.IsNullOrWhiteSpace(emp.UserStatus) || emp.UserStatus == "Active"
+            ? "table-success"
+            : "table-danger";
     }
 }

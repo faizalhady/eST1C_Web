@@ -46,10 +46,10 @@ b
 .scrolling-text {
     display: inline-block;
     color: white;
-    padding-top: 0px;
+    padding-top: 10px;
     padding-right: 50px; /* Space between repetitions */
     animation: scroll-left 23s linear infinite;
-    font-size: 10px;
+    font-size: 1.5vw;
     white-space: nowrap; /* Prevents text wrapping */
     min-width: 100%; /* Ensures text stays in one line */
 }

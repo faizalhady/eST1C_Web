@@ -61,7 +61,7 @@
             </div>
             <div id="side-card-2" class="card" style="height: auto;">
                 <div class="card-headerR text-center p-0">
-                    <div class="header-text">Torque Range</div>
+                    <div class="header-text">Torque Spec</div>
                 </div>
                 <div class="card-body d-flex flex-column align-items-center gap-1 p-1 overflow-auto side-nav">
                     <!-- Buttons -->
@@ -176,7 +176,7 @@
                     <div id="card-7" class="card h-100 d-flex flex-column">
                         <div class="card-headerR text-center p-1 m-0">
 
-                            <div class="header-text">@selectedKey SAP EAM</div>
+                            <div class="header-text">@selectedKey SAP EAM System</div>
                         </div>
                         <div class="flex-grow-1 p-0 m-0">
                             @if(@selectedKey == "Brand")
@@ -198,7 +198,7 @@
     <div class="col-6">
         <div id="card-8" class="card h-100 d-flex flex-column">
             <div class="card-headerR text-center p-0 m-0">
-                <div class="header-text">@selectedKey Smart Torque Details</div>
+                <div class="header-text">@selectedKey Smart Torque Specifications</div>
             </div>
             <div class="flex-grow-1 p-1" style="overflow-y: auto;"> 
                  <Table2 DataKey="@selectedKey" @key="@($"{selectedKey}_Table2")" RowClicked="OnRowClicked"/>
@@ -271,7 +271,7 @@
             key = "Brand";
         }
         ChildSelectedWorkcell = "";
-        selectedKey = key; // Update the dataset key
+        selectedKey = key; // Update the dataset hom
     }
 
     private void ShowWorkcell()
@@ -440,8 +440,8 @@
     }
 
     .body-text {
-        font-size: 1rem; 
-        font-weight: bold; /* Slightly smaller font size for body text */
+        font-size:1.5vw; /* Slightly smaller font size for body text */
+        font-weight: bold;
     }
 
     .card-header,

@@ -2,47 +2,50 @@
 @using Microsoft.AspNetCore.Components
 
 <table class="table table-hover table-bordered text-wrap table-sm custom-table">
-    <thead >
+    <thead>
         <tr>
-            <th>No</th>
+            <th>No.</th>
             <th>Brand</th>
             <th>Torque Model</th>
             <th>Torque Range</th>
-            <th>Serial No</th>
-            
-                <th>Workcell</th>
-            
+            <th>Serial No.</th>
+            <th>Workcell</th>
+            <th>Usage Status</th>
         </tr>
     </thead>
     <tbody>
         @if (TableData != null && TableData.Any())
         {
-            @foreach (var item in TableData)
+            @for (int i = 0; i < TableData.Count; i++)
             {
-                <tr @onclick="() => OnRowClick(item.WorkcellName)" style="cursor: pointer;">
+                var item = TableData[i];
+                <tr @onclick="() => OnRowClick(item.WorkcellName)" 
+                    class="@GetRowClass(item.WorkcellName)"
+                    style="cursor: pointer;">
                     <td>@item.No</td>
                     <td>@item.Brand</td>
                     <td>@item.Model</td>
                     <td>@item.TorqueRangeLbfIn</td>
                     <td>@item.SerialNo</td>
-                    
-                        <td>@item.Wc</td>
-                    
+                    <td>@item.Wc</td>
+                    <td>@item.Status</td>
                 </tr>
             }
         }
         else
         {
             <tr>
-                <td colspan="@(DataKey == "Overall" ? 6 : 6)" class="text-center">No data available</td>
+                <td colspan="7" class="text-center">No data available</td>
             </tr>
         }
     </tbody>
 </table>
 
 @code {
-    [Parameter] public string DataKey { get; set; } = ""; // Add this property
-    [Parameter] public EventCallback<string> RowClicked { get; set; } // Event to notify parent
+    [Parameter] public string DataKey { get; set; } = "";
+    [Parameter] public EventCallback<string> RowClicked { get; set; }
+
+    private string? _selectedWorkcellName;
 
     private List<Workcell> TableData => WorkcellData.TryGetValue(DataKey, out var data) ? data : new List<Workcell>();
 
@@ -50,51 +53,70 @@
     {
         { "Overall", new List<Workcell>
             {
-                new() { No = 1, Brand = "Desoutter", Model = "EABC60-370", TorqueRangeLbfIn = "88.51 ~ 531.04 lbf-in", SerialNo = "18H37459", WorkcellName = "18H37459", Wc ="Onto" },
-                new() { No = 2, Brand = "Desoutter", Model = "EABC60-370", TorqueRangeLbfIn = "88.51 ~ 531.04 lbf-in", SerialNo = "18F38056", WorkcellName = "18F38056", Wc ="Onto" },
-                new() { No = 3, Brand = "Desoutter", Model = "EPBC8-1800-4Q", TorqueRangeLbfIn = "13.28 ~ 70.81 lbf-in", SerialNo = "18H37462", WorkcellName = "18H37462", Wc ="Onto" },
-                new() { No = 4, Brand = "Hantas", Model = "MD3210", TorqueRangeLbfIn = "7.0 ~ 75.51l lbf.in", SerialNo = "1711010010", WorkcellName = "1711010010", Wc ="Onto" },
-                new() { No = 5, Brand = "Hantas", Model = "MD3210", TorqueRangeLbfIn = "7.0 ~ 75.51l lbf.in", SerialNo = "1711010008", WorkcellName = "1711010008", Wc ="Onto" },
-                new() { No = 6, Brand = "Hantas", Model = "MD3210", TorqueRangeLbfIn = "7.0 ~ 75.51l lbf.in", SerialNo = "1711010009", WorkcellName = "1711010009", Wc ="Onto" },
-                new() { No = 7, Brand = "Hantas", Model = "MD2611", TorqueRangeLbfIn = "3.47 ~ 29.51 lbf.in", SerialNo = "1901010075", WorkcellName = "1901010075", Wc ="Beckman Coulter" },
-                new() { No = 8, Brand = "Hantas", Model = "MD2611", TorqueRangeLbfIn = "3.47 ~ 29.51 lbf.in", SerialNo = "1901010074", WorkcellName = "1901010074", Wc ="Beckman Coulter" },
-                new() { No = 9, Brand = "Hantas", Model = "MD2602", TorqueRangeLbfIn = "0.43 ~ 6.07 lbf.in", SerialNo = "2307010107", WorkcellName = "2307010107", Wc ="Becton Dickinson" },
-                new() { No = 10, Brand = "Hantas", Model = "MD2602", TorqueRangeLbfIn = "0.43 ~ 6.07 lbf.in", SerialNo = "2307010108", WorkcellName = "2307010108", Wc ="Becton Dickinson" },
-                new() { No = 11, Brand = "Hantas", Model = "MD2602", TorqueRangeLbfIn = "0.43 ~ 6.07 lbf.in", SerialNo = "2307010109", WorkcellName = "2307010109", Wc ="Becton Dickinson" },
-                new() { No = 12, Brand = "Desoutter", Model = "ERXS20", TorqueRangeLbfIn = "0.30 ~ 1.77 lbf.in", SerialNo = "20C85712", WorkcellName = "20C85712", Wc ="Becton Dickinson" },
-                new() { No = 13, Brand = "Desoutter", Model = "ERXS20", TorqueRangeLbfIn = "0.30 ~ 1.77 lbf.in", SerialNo = "20D78918", WorkcellName = "20D78918", Wc ="Becton Dickinson" },
+                new() { No = 1, Brand = "Desoutter", Model = "EABC60-370", TorqueRangeLbfIn = "88.51 ~ 531.04 lbf-in", SerialNo = "18H37459", WorkcellName = "18H37459", Wc ="Onto", Status="Idle" },
+                new() { No = 2, Brand = "Desoutter", Model = "EABC60-370", TorqueRangeLbfIn = "88.51 ~ 531.04 lbf-in", SerialNo = "18F38056", WorkcellName = "18F38056", Wc ="Onto", Status="Idle" },
+                new() { No = 3, Brand = "Desoutter", Model = "EPBC8-1800-4Q", TorqueRangeLbfIn = "13.28 ~ 70.81 lbf-in", SerialNo = "18H37462", WorkcellName = "18H37462", Wc ="Onto", Status="Idle" },
+                new() { No = 4, Brand = "Hantas", Model = "MD3210", TorqueRangeLbfIn = "7.0 ~ 75.51l lbf.in", SerialNo = "1711010010", WorkcellName = "1711010010", Wc ="Onto", Status="Idle" },
+                new() { No = 5, Brand = "Hantas", Model = "MD3210", TorqueRangeLbfIn = "7.0 ~ 75.51l lbf.in", SerialNo = "1711010008", WorkcellName = "1711010008", Wc ="Onto", Status="Idle" },
+                new() { No = 6, Brand = "Hantas", Model = "MD3210", TorqueRangeLbfIn = "7.0 ~ 75.51l lbf.in", SerialNo = "1711010009", WorkcellName = "1711010009", Wc ="Onto", Status="Idle" },
+                new() { No = 7, Brand = "Hantas", Model = "MD2611", TorqueRangeLbfIn = "3.47 ~ 29.51 lbf.in", SerialNo = "1901010075", WorkcellName = "1901010075", Wc ="Beckman Coulter", Status="Active" },
+                new() { No = 8, Brand = "Hantas", Model = "MD2611", TorqueRangeLbfIn = "3.47 ~ 29.51 lbf.in", SerialNo = "1901010074", WorkcellName = "1901010074", Wc ="Beckman Coulter", Status="Active" },
+                new() { No = 9, Brand = "Hantas", Model = "MD2602", TorqueRangeLbfIn = "0.43 ~ 6.07 lbf.in", SerialNo = "2307010107", WorkcellName = "2307010107", Wc ="Becton Dickinson", Status="Active" },
+                new() { No = 10, Brand = "Hantas", Model = "MD2602", TorqueRangeLbfIn = "0.43 ~ 6.07 lbf.in", SerialNo = "2307010108", WorkcellName = "2307010108", Wc ="Becton Dickinson", Status="Active" },
+                new() { No = 11, Brand = "Hantas", Model = "MD2602", TorqueRangeLbfIn = "0.43 ~ 6.07 lbf.in", SerialNo = "2307010109", WorkcellName = "2307010109", Wc ="Becton Dickinson", Status="Active" },
+                new() { No = 12, Brand = "Desoutter", Model = "ERXS20", TorqueRangeLbfIn = "0.30 ~ 1.77 lbf.in", SerialNo = "20C85712", WorkcellName = "20C85712", Wc ="Becton Dickinson", Status="Active" },
+                new() { No = 13, Brand = "Desoutter", Model = "ERXS20", TorqueRangeLbfIn = "0.30 ~ 1.77 lbf.in", SerialNo = "20D78918", WorkcellName = "20D78918", Wc ="Becton Dickinson" , Status="Active"},
             }
         },
         { "Onto", new List<Workcell>
             {
-                new() { No = 1, Brand = "Desoutter", Model = "EABC60-370", TorqueRangeLbfIn = "88.51 ~ 531.04 lbf-in", SerialNo = "18H37459", WorkcellName = "18H37459", Wc ="Onto" },
-                new() { No = 2, Brand = "Desoutter", Model = "EABC60-370", TorqueRangeLbfIn = "88.51 ~ 531.04 lbf-in", SerialNo = "18F38056", WorkcellName = "18F38056", Wc ="Onto" },
-                new() { No = 3, Brand = "Desoutter", Model = "EPBC8-1800-4Q", TorqueRangeLbfIn = "13.28 ~ 70.81 lbf-in", SerialNo = "18H37462", WorkcellName = "18H37462", Wc ="Onto" },
-                new() { No = 4, Brand = "Hantas", Model = "MD3210", TorqueRangeLbfIn = "7.0 ~ 75.51 lbf.in", SerialNo = "1711010010", WorkcellName = "1711010010", Wc ="Onto" },
-                new() { No = 5, Brand = "Hantas", Model = "MD3210", TorqueRangeLbfIn = "7.0 ~ 75.51 lbf.in", SerialNo = "1711010008", WorkcellName = "1711010008", Wc ="Onto" },
-                new() { No = 6, Brand = "Hantas", Model = "MD3210", TorqueRangeLbfIn = "7.0 ~ 75.51 lbf.in", SerialNo = "1711010009", WorkcellName = "1711010009", Wc ="Onto" },
+                new() { No = 1, Brand = "Desoutter", Model = "EABC60-370", TorqueRangeLbfIn = "88.51 ~ 531.04 lbf-in", SerialNo = "18H37459", WorkcellName = "18H37459", Wc ="Onto", Status="Idle" },
+                new() { No = 2, Brand = "Desoutter", Model = "EABC60-370", TorqueRangeLbfIn = "88.51 ~ 531.04 lbf-in", SerialNo = "18F38056", WorkcellName = "18F38056", Wc ="Onto", Status="Idle" },
+                new() { No = 3, Brand = "Desoutter", Model = "EPBC8-1800-4Q", TorqueRangeLbfIn = "13.28 ~ 70.81 lbf-in", SerialNo = "18H37462", WorkcellName = "18H37462", Wc ="Onto", Status="Idle" },
+                new() { No = 4, Brand = "Hantas", Model = "MD3210", TorqueRangeLbfIn = "7.0 ~ 75.51 lbf.in", SerialNo = "1711010010", WorkcellName = "1711010010", Wc ="Onto", Status="Idle" },
+                new() { No = 5, Brand = "Hantas", Model = "MD3210", TorqueRangeLbfIn = "7.0 ~ 75.51 lbf.in", SerialNo = "1711010008", WorkcellName = "1711010008", Wc ="Onto", Status="Idle" },
+                new() { No = 6, Brand = "Hantas", Model = "MD3210", TorqueRangeLbfIn = "7.0 ~ 75.51 lbf.in", SerialNo = "1711010009", WorkcellName = "1711010009", Wc ="Onto", Status="Idle" },
             }
         },
         { "Beckman Coulter", new List<Workcell>
             {
-                new() { No = 1, Brand = "Hantas", Model = "MD2611", TorqueRangeLbfIn = "3.47 ~ 29.51 lbf.in", SerialNo = "1901010075", WorkcellName = "1901010075", Wc ="Beckman Coulter" },
-                new() { No = 2, Brand = "Hantas", Model = "MD2611", TorqueRangeLbfIn = "3.47 ~ 29.51 lbf.in", SerialNo = "1901010074", WorkcellName = "1901010074", Wc ="Beckman Coulter" },
+                new() { No = 1, Brand = "Hantas", Model = "MD2611", TorqueRangeLbfIn = "3.47 ~ 29.51 lbf.in", SerialNo = "1901010075", WorkcellName = "1901010075", Wc ="Beckman Coulter" , Status="Active"},
+                new() { No = 2, Brand = "Hantas", Model = "MD2611", TorqueRangeLbfIn = "3.47 ~ 29.51 lbf.in", SerialNo = "1901010074", WorkcellName = "1901010074", Wc ="Beckman Coulter", Status="Active" },
             }
         },
         { "Becton Dickinson", new List<Workcell>
             {
-                new() { No = 1, Brand = "Hantas", Model = "MD2602", TorqueRangeLbfIn = "0.43 ~ 6.07 lbf.in", SerialNo = "2307010107", WorkcellName = "2307010107", Wc ="Becton Dickinson"  },
-                new() { No = 2, Brand = "Hantas", Model = "MD2602", TorqueRangeLbfIn = "0.43 ~ 6.07 lbf.in", SerialNo = "2307010108", WorkcellName = "2307010108", Wc ="Becton Dickinson"  },
-                new() { No = 3, Brand = "Hantas", Model = "MD2602", TorqueRangeLbfIn = "0.43 ~ 6.07 lbf.in", SerialNo = "2307010109", WorkcellName = "2307010109", Wc ="Becton Dickinson"  },
-                new() { No = 4, Brand = "Desoutter", Model = "ERXS20", TorqueRangeLbfIn = "0.30 ~ 1.77 lbf.in", SerialNo = "20C85712", WorkcellName = "20C85712", Wc ="Becton Dickinson"  },
-                new() { No = 5, Brand = "Desoutter", Model = "ERXS20", TorqueRangeLbfIn = "0.30 ~ 1.77 lbf.in", SerialNo = "20D78918", WorkcellName = "20D78918", Wc ="Becton Dickinson"  },
+                new() { No = 1, Brand = "Hantas", Model = "MD2602", TorqueRangeLbfIn = "0.43 ~ 6.07 lbf.in", SerialNo = "2307010107", WorkcellName = "2307010107", Wc ="Becton Dickinson" , Status="Active" },
+                new() { No = 2, Brand = "Hantas", Model = "MD2602", TorqueRangeLbfIn = "0.43 ~ 6.07 lbf.in", SerialNo = "2307010108", WorkcellName = "2307010108", Wc ="Becton Dickinson" , Status="Active" },
+                new() { No = 3, Brand = "Hantas", Model = "MD2602", TorqueRangeLbfIn = "0.43 ~ 6.07 lbf.in", SerialNo = "2307010109", WorkcellName = "2307010109", Wc ="Becton Dickinson" , Status="Active" },
+                new() { No = 4, Brand = "Desoutter", Model = "ERXS20", TorqueRangeLbfIn = "0.30 ~ 1.77 lbf.in", SerialNo = "20C85712", WorkcellName = "20C85712", Wc ="Becton Dickinson"  , Status="Active"},
+                new() { No = 5, Brand = "Desoutter", Model = "ERXS20", TorqueRangeLbfIn = "0.30 ~ 1.77 lbf.in", SerialNo = "20D78918", WorkcellName = "20D78918", Wc ="Becton Dickinson"  , Status="Active"},
             }
         }
     };
 
+    protected override void OnInitialized()
+    {
+        if (TableData != null && TableData.Any())
+        {
+            // Set the first row as initially selected
+            _selectedWorkcellName = TableData[0].WorkcellName;
+        }
+    }
+
     private void OnRowClick(string workcellName)
     {
-        RowClicked.InvokeAsync(workcellName); // Notify parent
+        // Set the clicked row as selected and don't allow deselection
+        _selectedWorkcellName = workcellName;
+        RowClicked.InvokeAsync(workcellName);
+    }
+
+    private string GetRowClass(string workcellName)
+    {
+        // Return table-primary if the row is selected
+        return _selectedWorkcellName == workcellName 
+            ? "table-primary" 
+            : "";
     }
 
     public class Workcell
@@ -104,25 +126,24 @@
         public string Model { get; set; } = string.Empty;
         public string TorqueRangeLbfIn { get; set; } = string.Empty;
         public string SerialNo { get; set; } = string.Empty;
-        public string WorkcellName { get; set; } = string.Empty; // Ensures each row has a WorkcellName
-        public string Wc { get; set; } = string.Empty; // Ensures each row has a WorkcellName
+        public string WorkcellName { get; set; } = string.Empty;
+        public string Wc { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
     }
 }
 
 
 <style>
-    /* Specific table header size reduction */
 .custom-table th {
-    font-size: 0.8rem; /* Adjust font size */
-    padding: 4px 8px; /* Adjust padding for a more compact design */
-    line-height: 1.2; /* Optional: Adjust line height */
-    text-align: center; /* Optional: Align text */
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    line-height: 1.2;
+    text-align: center;
 }
 
-/* Optional: Add reduced padding for the table cells */
 .custom-table td {
-    font-size: 0.9rem; /* Slightly larger than header for readability */
-    padding: 6px 10px; /* Adjust padding */
+    font-size: 0.9rem;
+    padding: 3px 3px;
+    text-align: center;
 }
-
 </style>

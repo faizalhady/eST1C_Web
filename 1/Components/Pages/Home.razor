@@ -54,7 +54,7 @@
             </div>
             <div id="side-card-2" class="card" style="height: auto;">
                 <div class="card-headerR text-center p-0">
-                    <div class="header-text">Torque Range</div>
+                    <div class="header-text">Torque Spec</div>
                 </div>
                 <div class="card-body d-flex flex-column align-items-center gap-1 p-1 overflow-auto side-nav">
                     <!-- Buttons -->
@@ -171,7 +171,7 @@
                     <div id="card-7" class="card h-100 d-flex flex-column">
                         <div class="card-headerR text-center p-1 m-0">
                             
-                            <div class="header-text">@selectedKey SAP EAM</div>
+                            <div class="header-text">@selectedKey SAP EAM System</div>
                         </div>
                         <div class="flex-grow-1 p-0 m-0">
                             <Donut2 DataKey="@selectedKey" Height="100%" Width="100%"
@@ -186,7 +186,7 @@
     <div class="col-6">
         <div id="card-8" class="card h-100 d-flex flex-column">
             <div class="card-headerR text-center p-0 m-0">
-                <div class="header-text">@selectedKey Smart Torque Details</div>
+                <div class="header-text">@selectedKey Smart Torque Specifications</div>
             </div>
             <div class="flex-grow-1 p-1" style="overflow-y: auto;"> 
                  <Table2 DataKey="@selectedKey" @key="@($"{selectedKey}_Table2")" RowClicked="OnRowClicked"/>
@@ -206,7 +206,7 @@
                  }
             </div>
             <div class="flex-grow-1 ps-2 pe-2">
-                <Line @key="@ChildSelectedWorkcell" SelectedWorkcell="@ChildSelectedWorkcell" width="98%" height="150%"/>
+                <Line @key="@ChildSelectedWorkcell" SelectedWorkcell="@ChildSelectedWorkcell" width="98%" height="150%" />
             </div>
         </div>
     </div>
@@ -220,7 +220,7 @@
 {
     <div class="sticky-lg-bottom">
         <div class="scrolling-text">
-             Welcome to Smart Torque One-Center! Workcell details for Advantest DF, Fortive, Cohu, Gas Box, Lam Mec, and Micron SIG are in progress. Contact SME: Chanop/Syed. Thank you!!!
+             Welcome to Smart Torque One-Center! We are currently enhancing and organizing the eST1C web-based platform, continuing ongoing development efforts. Contact SME: Chanop Tiang. Thank you!!!
         </div>
     </div>
 }
@@ -228,13 +228,11 @@
 @code {
     private bool showWorkcell = true;
     private bool showNotification = false;
-
-    private string selectedKey = ""; // Default dataset
-    private List<string> ButtonLabels = new() { "Overall", "Onto", "Beckman Coulter", "Becton Dickinson", "Advantest DF", "Fortive", "Cohu", "Gas Box", "Lam Mec", "Micron SIG" };
-    private List<string> ButtonBrand = new() { "Overall", "Hantas", "Desoutter", "Sehan" };
+    private string selectedKey = "Overall"; // Default dataset
+    private List<string> ButtonLabels = new() { "Overall", "Onto", "Beckman Coulter","Becton Dickinson","Advantest DF", "Fortive", "Cohu","Gas Box", "Lam Mec", "Micron SIG" };
+    private List<string> ButtonBrand = new() { "Overall","Hantas","Desoutter","Sehan" };
     private List<string> ButtonRange = new() { "Overall" };
-
-    private string? ChildSelectedWorkcell = "";
+    private string? ChildSelectedWorkcell = null;
 
     private void UpdateChildSelectedWorkcell()
     {
@@ -245,85 +243,76 @@
             "Becton Dickinson" => "2307010107",
             _ => null // Reset or assign a default value if needed
         };
-        Console.WriteLine($"ChildSelectedWorkcell updated to: {ChildSelectedWorkcell}");
     }
-
     private void OnRowClicked(string workcellName)
     {
-        ChildSelectedWorkcell = workcellName;
+        ChildSelectedWorkcell = workcellName; // Update child dynamically
         Console.WriteLine($"Row clicked: {workcellName}");
     }
-
     private void UpdateDataKey(string key)
     {
-        selectedKey = key;
+        ChildSelectedWorkcell = "";
+        selectedKey = key; // Update the dataset key
         UpdateChildSelectedWorkcell();
     }
-
     private void UpdateDataNavKey(string key)
     {
-        if (key == "Overall")
-        {
+         if(key == "Overall"){
             key = "Brand";
         }
         ChildSelectedWorkcell = "";
-        selectedKey = key;
         NavManager.NavigateTo($"/newpage?selectedKey={key}");
+        selectedKey = key; // Update the dataset key
     }
-
-    public void RangeNav()
-    {
+    public void RangeNav(){
         NavManager.NavigateTo("/range");
     }
-
     private void ShowWorkcell()
     {
         showWorkcell = true;
     }
-
     private void ShowPlant()
     {
         showWorkcell = false;
     }
-
     protected override void OnInitialized()
     {
-        ParseQueryParameters();
-        UpdateChildSelectedWorkcell();
-
-        // Start notification toggle task
+        
         Task.Run(() => ToggleNotificationAsync());
-
-        // Listen for location changes
-        NavManager.LocationChanged += OnLocationChanged;
-    }
-
-    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
-    {
-        ParseQueryParameters();
-        UpdateChildSelectedWorkcell();
-    }
-
-    private void ParseQueryParameters()
-    {
-        // Parse query parameters to get selectedKey
         var uri = new Uri(NavManager.Uri);
         var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
         selectedKey = query["selectedKey"] ?? "Overall";
+        NavManager.LocationChanged += OnLocationChanged;
+        
+        UpdateSelectedKeyFromUri();
     }
-
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        UpdateSelectedKeyFromUri();
+    }
+    private void UpdateSelectedKeyFromUri()
+    {
+        // Parse query parameters
+        var uri = new Uri(NavManager.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        // Update the selectedKey parameter, defaulting to "Overall" if not provided
+        var newSelectedKey = query["selectedKey"] ?? "Overall";
+        if (selectedKey != newSelectedKey)
+        {
+            selectedKey = newSelectedKey;
+            StateHasChanged(); // Force re-render
+        }
+    }
     private async Task ToggleNotificationAsync()
     {
         while (true)
         {
-            showNotification = true;
-            InvokeAsync(StateHasChanged);
-
-            await Task.Delay(20000); // Keep the notification visible for 20 seconds
-            showNotification = false;
-            InvokeAsync(StateHasChanged);
-
-            await Task.Delay(10000); // Wait 10 seconds before showing again
+            showNotification = true; // Show the notification
+            InvokeAsync(StateHasChanged); // Safely notify Blazor of state change
+            await Task.Delay(20000); // Keep the notification visible for 10 seconds
+            showNotification = false; // Hide the notification
+            InvokeAsync(StateHasChanged); // Safely notify Blazor of state change
+            await Task.Delay(10000); // Wait for 10 seconds before showing again
         }
     }
 
@@ -411,62 +400,62 @@
 }
 
 
-<style>
-/* Ensure the container spans the full width */
-.responsive-button-container {
-    width: 100%; /* Full width of the parent container */
-    display: grid; /* Grid layout for vertical stacking */
-    gap: 0.5rem; /* Adjust spacing between buttons */
-}
+    <style>
+    /* Ensure the container spans the full width */
+    .responsive-button-container {
+        width: 100%; /* Full width of the parent container */
+        display: grid; /* Grid layout for vertical stacking */
+        gap: 0.5rem; /* Adjust spacing between buttons */
+    }
 
-/* Ensure buttons take the full width of the container */
-.responsive-button-container .btn {
-    width: 100%; /* Full width buttons */
-}
+    /* Ensure buttons take the full width of the container */
+    .responsive-button-container .btn {
+        width: 100%; /* Full width buttons */
+    }
 
-    /* Add these styles to your existing CSS */
-.table-container {
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
+        /* Add these styles to your existing CSS */
+    .table-container {
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
 
-/* Ensure the table header stays fixed */
-.table-fixed-header {
-    position: sticky;
-    top: 0;
-    background-color: white;
-    z-index: 1;
-}
+    /* Ensure the table header stays fixed */
+    .table-fixed-header {
+        position: sticky;
+        top: 0;
+        background-color: white;
+        z-index: 1;
+    }
 
-/* Modify the existing card styles */
-#card-8 {
-    max-height: 42vh; /* Adjust this value based on your needs */
-    
-}
+    /* Modify the existing card styles */
+    #card-8, #card-9 {
+        max-height: 40vh; /* Adjust this value based on your needs */
+        
+    }
 
-/* Style the table rows */
-.table-row {
-    font-size: 0.8rem;
-}
+    /* Style the table rows */
+    .table-row {
+        font-size: 0.8rem;
+    }
 
-/* Custom scrollbar styles for better appearance */
-.table-container::-webkit-scrollbar {
-    width: 2px;
-}
+    /* Custom scrollbar styles for better appearance */
+    .table-container::-webkit-scrollbar {
+        width: 2px;
+    }
 
-.table-container::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
+    .table-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
 
-.table-container::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-}
+    .table-container::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+    }
 
-.table-container::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
+    .table-container::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
     .header-text {
         font-weight: bold;
         color: white;
@@ -474,8 +463,8 @@
     }
 
     .body-text {
-        font-size: 1rem; 
-        font-weight: bold;/* Slightly smaller font size for body text */
+        font-size:1.5vw; 
+        font-weight: bold;
     }
 
     .card-header,

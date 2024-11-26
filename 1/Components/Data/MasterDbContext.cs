@@ -39,6 +39,7 @@ public class MasterInventory
     public DateTime? KeyInDate { get; set; }
     public string? Owner { get; set; }
     public string? Comment { get; set; }
+    public string RegistrationStatus => string.IsNullOrWhiteSpace(RegisterSAPEAM) ? "Not Registered" : "Registered";
 
 }
 
